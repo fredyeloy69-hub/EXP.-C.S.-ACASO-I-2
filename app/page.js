@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { db } from "@/lib/firebaseClient";
-import {
+import { generarReportePorArea, generarReporteConsolidadoGlobal } from "../lib/exportarReporte";
+import { generarReporteExcelPorArea } from "../lib/exportarExcel";
+import { LOGO_PUNO_BASE64 } from "../lib/logoPuno";
   collection,
   doc,
   onSnapshot,
