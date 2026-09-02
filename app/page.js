@@ -27,19 +27,19 @@ const auth = getAuth(db.app);
 const COLLAPSE_STORAGE_KEY = "acocollo_i2_grupos_colapsados";
 
 const ESTADO_COLOR = {
-  completa: "#e5b80b",
+  completa: "#7A1F2B",
   incompleta: "#e67e22",
   vacia: "#c0392b",
 };
 
 const AREA_COLORS = [
-  "#e5b80b",
+  "#7A1F2B",
   "#e67e22",
   "#c0392b",
-  "#457b9d",
+  "#A64A57",
   "#1d3557",
   "#f1c40f",
-  "#e5b80b",
+  "#7A1F2B",
 ];
 
 function colorForArea(area) {
@@ -49,11 +49,11 @@ function colorForArea(area) {
 }
 
 const ESTADO_OPTIONS = [
-  { value: "pendientes", label: "Pendientes", color: "#e5b80b" },
+  { value: "pendientes", label: "Pendientes", color: "#7A1F2B" },
   { value: "incompleta", label: "Incompletas", color: "#e67e22" },
   { value: "vacia", label: "Vacías", color: "#c0392b" },
   { value: "completa", label: "Completas", color: "#f1c40f" },
-  { value: "todas", label: "Todas", color: "#457b9d" },
+  { value: "todas", label: "Todas", color: "#A64A57" },
 ];
 
 const EVENTO_LABEL = {
@@ -69,15 +69,15 @@ const EVENTO_LABEL = {
 };
 
 const EVENTO_COLOR = {
-  archivo_subido: "#e5b80b",
+  archivo_subido: "#7A1F2B",
   archivo_reemplazado: "#e67e22",
   archivo_borrado: "#c0392b",
   carpeta_creada: "#264653",
   carpeta_borrada: "#c0392b",
   carpeta_movida: "#e67e22",
-  carpeta_marcada_completa: "#e5b80b",
+  carpeta_marcada_completa: "#7A1F2B",
   carpeta_marcada_incompleta: "#e67e22",
-  carpeta_desmarcada: "#457b9d",
+  carpeta_desmarcada: "#A64A57",
 };
 
 const EVENTO_ICONO = {
@@ -445,7 +445,7 @@ export default function Page() {
           z-index: 40;
           backdrop-filter: blur(12px);
           background: rgba(12,16,21,.96);
-          border-bottom: 3.5px solid #e5b80b;
+          border-bottom: 3.5px solid #7A1F2B;
           box-shadow: 0 6px 25px rgba(0,0,0,.7);
         }
         .acocollo-fade-in {
@@ -475,7 +475,7 @@ export default function Page() {
         .acocollo-fondo-animado button:not(:disabled):hover {
           transform: translateY(-2px) scale(1.02);
           filter: brightness(1.18);
-          box-shadow: 0 6px 20px rgba(229,184,11,.3);
+          box-shadow: 0 6px 20px rgba(122,31,43,.3);
         }
         .acocollo-fondo-animado button:not(:disabled):active {
           transform: translateY(0) scale(0.97);
@@ -487,8 +487,8 @@ export default function Page() {
         }
         .acocollo-tarjeta-viva:hover {
           transform: translateY(-3px);
-          border-color: #e5b80b !important;
-          box-shadow: 0 8px 25px rgba(229,184,11,.25) !important;
+          border-color: #7A1F2B !important;
+          box-shadow: 0 8px 25px rgba(122,31,43,.25) !important;
         }
         @keyframes acocolloTarjetaEntrada {
           from { opacity: 0; transform: translateY(10px) scale(.96); }
@@ -504,7 +504,7 @@ export default function Page() {
         .acocollo-celda-heatmap:hover {
           transform: scale(1.35);
           transition: transform .12s ease;
-          box-shadow: 0 0 12px rgba(229,184,11,1);
+          box-shadow: 0 0 12px rgba(122,31,43,1);
           z-index: 70;
         }
         .acocollo-celda-hoy {
@@ -515,7 +515,7 @@ export default function Page() {
           position: absolute;
           inset: 0;
           border-radius: inherit;
-          border: 2px solid #e5b80b;
+          border: 2px solid #7A1F2B;
           animation: acocolloHoyPulso 1.4s ease-out infinite;
           pointer-events: none;
         }
@@ -560,16 +560,19 @@ export default function Page() {
               style={{ width: modoPresentacion ? 104 : 80, height: modoPresentacion ? 116 : 90, flexShrink: 0 }}
             />
             <div>
-              <h1 style={{ fontSize: modoPresentacion ? 36 : 24, marginBottom: 4, fontWeight: 800, letterSpacing: -0.3, color: "#e5b80b", textShadow: "0 0 18px rgba(229,184,11,.7)" }}>
-                Expediente Técnico — C.S. ACOCOLLO I-2
+              <h1 style={{ fontSize: modoPresentacion ? 36 : 24, marginBottom: 4, fontWeight: 800, letterSpacing: -0.3, color: "#7A1F2B", textShadow: "0 0 18px rgba(122,31,43,.7)" }}>
+                Expediente Técnico — C.S. ACASO I-2
               </h1>
-              <p style={{ color: "#a8dadc", marginTop: 0, marginBottom: 4, fontSize: modoPresentacion ? 16 : 14 }}>
+              <p style={{ color: "#E3B8BE", marginTop: 0, marginBottom: 4, fontSize: modoPresentacion ? 16 : 14 }}>
                 Estado en tiempo real de la carga de documentación
               </p>
+              <p style={{ color: "#E3B8BE", marginTop: 0, marginBottom: 4, fontSize: modoPresentacion ? 12.5 : 10.5, maxWidth: 720, lineHeight: 1.35 }}>
+                "MEJORAMIENTO DEL SERVICIO DE ATENCION DE SALUD BASICOS EN ACOCOLLO DISTRITO DE HUANCANE DE LA PROVINCIA DE HUANCANE DEL DEPARTAMENTO DE PUNO"
+              </p>
               {resumen?.ultimaSync?.toDate && (
-                <p style={{ color: "#e5b80b", fontSize: 11, marginTop: 0, fontWeight: 700 }}>
+                <p style={{ color: "#7A1F2B", fontSize: 11, marginTop: 0, fontWeight: 700 }}>
                   Última sincronización: {tiempoRelativo(resumen.ultimaSync.toDate())}
-                  {usuarioGoogle && <span style={{ marginLeft: 8, color: "#457b9d" }}>· {usuarioGoogle.email}</span>}
+                  {usuarioGoogle && <span style={{ marginLeft: 8, color: "#A64A57" }}>· {usuarioGoogle.email}</span>}
                 </p>
               )}
             </div>
@@ -583,9 +586,9 @@ export default function Page() {
                   fontWeight: 700,
                   padding: "14px 18px",
                   borderRadius: 14,
-                  border: "2px solid #e5b80b",
+                  border: "2px solid #7A1F2B",
                   background: "#141c24",
-                  color: "#e5b80b",
+                  color: "#7A1F2B",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
@@ -606,9 +609,9 @@ export default function Page() {
                 fontWeight: 700,
                 padding: "14px 18px",
                 borderRadius: 14,
-                border: "2px solid #e5b80b",
+                border: "2px solid #7A1F2B",
                 background: "#141c24",
-                color: exportandoGlobal ? "#a8dadc" : "#e5b80b",
+                color: exportandoGlobal ? "#E3B8BE" : "#7A1F2B",
                 cursor: exportandoGlobal || carpetas.length === 0 ? "not-allowed" : "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -628,9 +631,9 @@ export default function Page() {
                 fontWeight: 700,
                 padding: "14px 20px",
                 borderRadius: 14,
-                border: modoPresentacion ? "2.5px solid #e5b80b" : "1.5px solid #457b9d",
-                background: modoPresentacion ? "#e5b80b33" : "#141c24",
-                color: modoPresentacion ? "#e5b80b" : "#ffffff",
+                border: modoPresentacion ? "2.5px solid #7A1F2B" : "1.5px solid #A64A57",
+                background: modoPresentacion ? "#7A1F2B33" : "#141c24",
+                color: modoPresentacion ? "#7A1F2B" : "#ffffff",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -650,11 +653,11 @@ export default function Page() {
                   fontWeight: 800,
                   padding: "22px 42px",
                   borderRadius: 16,
-                  border: "2.5px solid #e5b80b",
-                  background: sincronizando ? "#141c24" : "linear-gradient(90deg,#e5b80b55,#1f2d3d55)",
-                  color: sincronizando ? "#a8dadc" : "#e5b80b",
+                  border: "2.5px solid #7A1F2B",
+                  background: sincronizando ? "#141c24" : "linear-gradient(90deg,#7A1F2B55,#1f2d3d55)",
+                  color: sincronizando ? "#E3B8BE" : "#7A1F2B",
                   cursor: sincronizando ? "not-allowed" : "pointer",
-                  boxShadow: sincronizando ? "none" : "0 0 35px rgba(229,184,11,.6)",
+                  boxShadow: sincronizando ? "none" : "0 0 35px rgba(122,31,43,.6)",
                   letterSpacing: 0.3,
                 }}
               >
@@ -665,7 +668,7 @@ export default function Page() {
                   style={{
                     fontSize: 11,
                     marginTop: 6,
-                    color: mensajeSync.tipo === "ok" ? "#e5b80b" : "#e76f51",
+                    color: mensajeSync.tipo === "ok" ? "#7A1F2B" : "#e76f51",
                   }}
                 >
                   {mensajeSync.texto}
@@ -685,17 +688,17 @@ export default function Page() {
             background: "#141c24",
             borderRadius: 12,
             padding: "16px 18px",
-            border: "2px solid #e5b80b66",
-            boxShadow: "0 4px 20px rgba(229,184,11,.15)",
+            border: "2px solid #7A1F2B66",
+            boxShadow: "0 4px 20px rgba(122,31,43,.15)",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
             <span style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", letterSpacing: 0.5 }}>
-              <span style={{ color: "#e5b80b" }}>»» </span>AVANCE POR CARPETAS
+              <span style={{ color: "#7A1F2B" }}>»» </span>AVANCE POR CARPETAS
             </span>
-            <strong style={{ fontSize: 30, color: "#e5b80b", textShadow: "0 0 18px rgba(229,184,11,.7)" }}>{pct}%</strong>
+            <strong style={{ fontSize: 30, color: "#7A1F2B", textShadow: "0 0 18px rgba(122,31,43,.7)" }}>{pct}%</strong>
           </div>
-          <div style={{ fontSize: 11, color: "#a8dadc", marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: "#E3B8BE", marginBottom: 8 }}>
             {resumen?.completas ?? "–"} de {resumen?.totalFinales ?? "–"} carpetas marcadas como completas
           </div>
           <div
@@ -704,7 +707,7 @@ export default function Page() {
               background: "#0c1015",
               borderRadius: 17,
               overflow: "hidden",
-              boxShadow: "inset 0 2px 6px rgba(0,0,0,.6), 0 0 0 1px #e5b80b66",
+              boxShadow: "inset 0 2px 6px rgba(0,0,0,.6), 0 0 0 1px #7A1F2B66",
             }}
           >
             <div
@@ -713,10 +716,10 @@ export default function Page() {
                 width: `${pct}%`,
                 height: "100%",
                 backgroundImage:
-                  "repeating-linear-gradient(45deg, rgba(255,255,255,.2) 0px, rgba(255,255,255,.2) 9px, transparent 9px, transparent 18px), linear-gradient(90deg,#e5b80b,#e67e22)",
+                  "repeating-linear-gradient(45deg, rgba(255,255,255,.2) 0px, rgba(255,255,255,.2) 9px, transparent 9px, transparent 18px), linear-gradient(90deg,#7A1F2B,#e67e22)",
                 backgroundSize: "36px 36px, 100% 100%",
                 transition: "width .4s ease",
-                boxShadow: "0 0 25px rgba(229,184,11,.8)",
+                boxShadow: "0 0 25px rgba(122,31,43,.8)",
                 borderRadius: 17,
               }}
             />
@@ -730,19 +733,19 @@ export default function Page() {
             background: "#141c24",
             borderRadius: 12,
             padding: "16px 18px",
-            border: "2px solid #e5b80b66",
-            boxShadow: "0 4px 20px rgba(229,184,11,.15)",
+            border: "2px solid #7A1F2B66",
+            boxShadow: "0 4px 20px rgba(122,31,43,.15)",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
             <span style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", letterSpacing: 0.5 }}>
-              <span style={{ color: "#e5b80b" }}>»» </span>AVANCE POR ARCHIVOS <span style={{ fontSize: 11, color: "#a8dadc", fontWeight: 400 }}>(más preciso)</span>
+              <span style={{ color: "#7A1F2B" }}>»» </span>AVANCE POR ARCHIVOS <span style={{ fontSize: 11, color: "#E3B8BE", fontWeight: 400 }}>(más preciso)</span>
             </span>
-            <strong style={{ fontSize: 30, color: "#e5b80b", textShadow: "0 0 18px rgba(229,184,11,.7)" }}>
+            <strong style={{ fontSize: 30, color: "#7A1F2B", textShadow: "0 0 18px rgba(122,31,43,.7)" }}>
               {resumen?.pctArchivos ?? "–"}%
             </strong>
           </div>
-          <div style={{ fontSize: 11, color: "#a8dadc", marginBottom: 8 }}>
+          <div style={{ fontSize: 11, color: "#E3B8BE", marginBottom: 8 }}>
             {resumen?.totalArchivosCompletados ?? "–"} de {resumen?.totalArchivosNecesarios ?? "–"} archivos que hacen falta, ya están subidos
           </div>
           <div
@@ -751,16 +754,16 @@ export default function Page() {
               background: "#0c1015",
               borderRadius: 11,
               overflow: "hidden",
-              boxShadow: "inset 0 2px 6px rgba(0,0,0,.6), 0 0 0 1px #e5b80b66",
+              boxShadow: "inset 0 2px 6px rgba(0,0,0,.6), 0 0 0 1px #7A1F2B66",
             }}
           >
             <div
               style={{
                 width: `${resumen?.pctArchivos ?? 0}%`,
                 height: "100%",
-                background: "linear-gradient(90deg,#e5b80b,#e67e22)",
+                background: "linear-gradient(90deg,#7A1F2B,#e67e22)",
                 transition: "width .4s ease",
-                boxShadow: "0 0 18px rgba(229,184,11,.7)",
+                boxShadow: "0 0 18px rgba(122,31,43,.7)",
                 borderRadius: 11,
               }}
             />
@@ -769,8 +772,8 @@ export default function Page() {
 
         {/* Contadores con desglose */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, marginBottom: 32 }}>
-          <Card label="Carpetas finales" value={resumen?.totalFinales ?? "–"} color="#457b9d" grande={modoPresentacion} />
-          <Card label="Completas" value={resumen?.completas ?? "–"} color="#e5b80b" grande={modoPresentacion} />
+          <Card label="Carpetas finales" value={resumen?.totalFinales ?? "–"} color="#A64A57" grande={modoPresentacion} />
+          <Card label="Completas" value={resumen?.completas ?? "–"} color="#7A1F2B" grande={modoPresentacion} />
           <Card label="Incompletas" value={resumen?.incompletas ?? "–"} color="#e67e22" grande={modoPresentacion} />
           <Card label="Vacías" value={resumen?.vacias ?? "–"} color="#c0392b" grande={modoPresentacion} />
         </div>
@@ -793,9 +796,9 @@ export default function Page() {
                   fontSize: 11,
                   padding: "5px 12px",
                   borderRadius: 16,
-                  border: `1px solid ${rangoDiasHeatmap === btn.val ? "#e5b80b" : "#457b9d"}`,
-                  background: rangoDiasHeatmap === btn.val ? "#e5b80b33" : "#141c24",
-                  color: rangoDiasHeatmap === btn.val ? "#e5b80b" : "#a8dadc",
+                  border: `1px solid ${rangoDiasHeatmap === btn.val ? "#7A1F2B" : "#A64A57"}`,
+                  background: rangoDiasHeatmap === btn.val ? "#7A1F2B33" : "#141c24",
+                  color: rangoDiasHeatmap === btn.val ? "#7A1F2B" : "#E3B8BE",
                   fontWeight: 600,
                   cursor: "pointer",
                 }}
@@ -850,7 +853,7 @@ export default function Page() {
         {modoPresentacion && areas.length > 0 && (
           <div className="acocollo-fade-in acocollo-modo-transicion" style={{ marginTop: 36 }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: "#e5b80b" }}>»» </span>AVANCE POR ESPECIALIDAD, POR ÁREA
+              <span style={{ color: "#7A1F2B" }}>»» </span>AVANCE POR ESPECIALIDAD, POR ÁREA
             </div>
             {areas.map((a) => {
               const especialidadesDelArea = especialidadPorArea[a] || {};
@@ -887,7 +890,7 @@ export default function Page() {
                         boxShadow: `0 0 8px ${colorForArea(a)}`,
                       }}
                     />
-                    {a} <span style={{ color: "#a8dadc", fontWeight: 400, textTransform: "none" }}>({nombresOrdenados.length} especialidades)</span>
+                    {a} <span style={{ color: "#E3B8BE", fontWeight: 400, textTransform: "none" }}>({nombresOrdenados.length} especialidades)</span>
                   </div>
                   <div
                     style={{
@@ -937,7 +940,7 @@ export default function Page() {
                 boxSizing: "border-box",
                 background: "#141c24",
                 color: "#ffffff",
-                border: "1.5px solid #457b9d",
+                border: "1.5px solid #A64A57",
                 borderRadius: 8,
                 padding: "9px 12px",
                 fontSize: 13,
@@ -956,9 +959,9 @@ export default function Page() {
                       fontSize: 11,
                       padding: "6px 12px",
                       borderRadius: "20px 0 0 20px",
-                      border: "1.5px solid #457b9d",
+                      border: "1.5px solid #A64A57",
                       background: "#141c24",
-                      color: exportandoArea === a ? "#a8dadc" : "#ffffff",
+                      color: exportandoArea === a ? "#E3B8BE" : "#ffffff",
                       fontWeight: 600,
                       cursor: exportandoArea === a ? "not-allowed" : "pointer",
                     }}
@@ -973,10 +976,10 @@ export default function Page() {
                       fontSize: 11,
                       padding: "6px 12px",
                       borderRadius: "0 20px 20px 0",
-                      border: "1.5px solid #457b9d",
+                      border: "1.5px solid #A64A57",
                       borderLeft: "none",
                       background: "#141c24",
-                      color: exportandoExcelArea === a ? "#a8dadc" : "#e5b80b",
+                      color: exportandoExcelArea === a ? "#E3B8BE" : "#7A1F2B",
                       fontWeight: 600,
                       cursor: exportandoExcelArea === a ? "not-allowed" : "pointer",
                     }}
@@ -1000,7 +1003,7 @@ export default function Page() {
                 area="Todas"
                 pct={resumen?.pctArchivos ?? 0}
                 total={resumen?.totalFinales ?? 0}
-                color="#e5b80b"
+                color="#7A1F2B"
                 active={filtroArea === "Todas"}
                 onClick={() => setFiltroArea("Todas")}
               />
@@ -1036,20 +1039,20 @@ export default function Page() {
                 flexWrap: "wrap",
                 alignItems: "center",
                 background: "#141c24",
-                border: "1.5px solid #e5b80b66",
+                border: "1.5px solid #7A1F2B66",
                 borderRadius: 10,
                 padding: "10px 14px",
               }}
             >
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#a8dadc", marginRight: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#E3B8BE", marginRight: 4 }}>
                 ⚙️ EXPORTAR FILTRO:
               </span>
               {[
-                { id: "todas", label: "📂 Todas", color: "#457b9d" },
+                { id: "todas", label: "📂 Todas", color: "#A64A57" },
                 { id: "completas", label: "✅ Completas", color: "#2a9d8f" },
                 { id: "incompletas", label: "⚠️ Incompletas", color: "#e67e22" },
                 { id: "vacias", label: "❌ Vacías", color: "#c0392b" },
-                { id: "incompletas_vacias", label: "🚨 Inc. + Vacías", color: "#e5b80b" },
+                { id: "incompletas_vacias", label: "🚨 Inc. + Vacías", color: "#7A1F2B" },
               ].map((f) => (
                 <button
                   key={f.id}
@@ -1074,7 +1077,7 @@ export default function Page() {
               ))}
               <button
                 onClick={() => setColapsados((prev) => ({ ...prev, __all: !prev.__all }))}
-                style={{ ...chipStyle(false, "#a8dadc"), fontWeight: 700 }}
+                style={{ ...chipStyle(false, "#E3B8BE"), fontWeight: 700 }}
               >
                 {colapsados.__all ? "▸ Expandir todo" : "▾ Colapsar todo"}
               </button>
@@ -1087,7 +1090,7 @@ export default function Page() {
                 background: "#0c1015",
                 borderRadius: 12,
                 overflow: "hidden",
-                border: "2px solid #e5b80b66",
+                border: "2px solid #7A1F2B66",
                 boxShadow: "0 6px 24px rgba(0,0,0,.6)",
               }}
             >
@@ -1144,8 +1147,8 @@ export default function Page() {
                         style={{
                           padding: "12px 16px 12px 14px",
                           background: "#141c24",
-                          borderLeft: `5px solid ${vaciasGrupo > 0 ? "#c0392b" : tienePendientes ? "#e67e22" : "#e5b80b"}`,
-                          borderTop: "1px solid #e5b80b44",
+                          borderLeft: `5px solid ${vaciasGrupo > 0 ? "#c0392b" : tienePendientes ? "#e67e22" : "#7A1F2B"}`,
+                          borderTop: "1px solid #7A1F2B44",
                           borderBottom: "1px solid #0c1015",
                           display: "flex",
                           alignItems: "baseline",
@@ -1154,22 +1157,22 @@ export default function Page() {
                           userSelect: "none",
                         }}
                       >
-                        <span style={{ fontSize: 13, color: "#a8dadc", transform: grupoColapsado ? "rotate(-90deg)" : "none", display: "inline-block", transition: "transform .15s ease" }}>
+                        <span style={{ fontSize: 13, color: "#E3B8BE", transform: grupoColapsado ? "rotate(-90deg)" : "none", display: "inline-block", transition: "transform .15s ease" }}>
                           ▾
                         </span>
-                        <span style={{ fontSize: 11.5, fontWeight: 800, color: "#a8dadc", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                        <span style={{ fontSize: 11.5, fontWeight: 800, color: "#E3B8BE", textTransform: "uppercase", letterSpacing: 0.5 }}>
                           {g.area}
                         </span>
-                        <span style={{ color: "#e5b80b", fontSize: 12 }}>›</span>
+                        <span style={{ color: "#7A1F2B", fontSize: 12 }}>›</span>
                         <span
                           style={{
                             fontSize: 15,
                             fontWeight: 800,
                             color: "#0c1015",
-                            background: "#e5b80b",
+                            background: "#7A1F2B",
                             padding: "3px 10px",
                             borderRadius: "6px",
-                            boxShadow: "0 2px 8px rgba(229,184,11,.4)",
+                            boxShadow: "0 2px 8px rgba(122,31,43,.4)",
                             textShadow: "none",
                           }}
                         >
@@ -1191,7 +1194,7 @@ export default function Page() {
                               {pendientesGrupo} pendiente{pendientesGrupo !== 1 ? "s" : ""}
                             </span>
                           )}
-                          <span style={{ fontSize: 10.5, color: "#a8dadc", fontWeight: 600 }}>
+                          <span style={{ fontSize: 10.5, color: "#E3B8BE", fontWeight: 600 }}>
                             {g.items.length} carpeta{g.items.length !== 1 ? "s" : ""}
                           </span>
                         </span>
@@ -1221,8 +1224,8 @@ export default function Page() {
                                   fontSize: 10,
                                   padding: "2px 8px",
                                   borderRadius: 20,
-                                  background: (ESTADO_COLOR[c.estado] || "#e5b80b") + "33",
-                                  color: ESTADO_COLOR[c.estado] || "#e5b80b",
+                                  background: (ESTADO_COLOR[c.estado] || "#7A1F2B") + "33",
+                                  color: ESTADO_COLOR[c.estado] || "#7A1F2B",
                                   textTransform: "uppercase",
                                   fontWeight: 700,
                                   whiteSpace: "nowrap",
@@ -1237,18 +1240,18 @@ export default function Page() {
                                 style={{
                                   marginTop: 6,
                                   padding: "6px 10px",
-                                  background: "#e5b80b1c",
-                                  border: "1.5px solid #e5b80b55",
+                                  background: "#7A1F2B1c",
+                                  border: "1.5px solid #7A1F2B55",
                                   borderRadius: 8,
                                   fontSize: 11,
-                                  color: "#a8dadc",
+                                  color: "#E3B8BE",
                                 }}
                               >
-                                ✓ Marcada por <strong style={{ color: "#e5b80b" }}>{c.marcadoPor || "alguien"}</strong>
+                                ✓ Marcada por <strong style={{ color: "#7A1F2B" }}>{c.marcadoPor || "alguien"}</strong>
                               </div>
                             )}
                             <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, marginTop: 6 }}>
-                              <span style={{ fontSize: 11, color: "#a8dadc" }}>{detalle}</span>
+                              <span style={{ fontSize: 11, color: "#E3B8BE" }}>{detalle}</span>
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -1259,9 +1262,9 @@ export default function Page() {
                                   fontSize: 10,
                                   padding: "3px 9px",
                                   borderRadius: 20,
-                                  border: c.estado === "completa" ? "1.5px solid #e67e22" : "1.5px solid #e5b80b88",
+                                  border: c.estado === "completa" ? "1.5px solid #e67e22" : "1.5px solid #7A1F2B88",
                                   background: "transparent",
-                                  color: marcandoId === c.id ? "#457b9d" : c.estado === "completa" ? "#e67e22" : "#ffffff",
+                                  color: marcandoId === c.id ? "#A64A57" : c.estado === "completa" ? "#e67e22" : "#ffffff",
                                   cursor: marcandoId === c.id ? "not-allowed" : "pointer",
                                   whiteSpace: "nowrap",
                                   flexShrink: 0,
@@ -1288,15 +1291,15 @@ export default function Page() {
                 borderRadius: 12,
                 maxHeight: 480,
                 overflowY: "auto",
-                border: "2px solid #e5b80b66",
+                border: "2px solid #7A1F2B66",
                 boxShadow: "0 6px 24px rgba(0,0,0,.6)",
               }}
             >
               {eventos.length === 0 && (
-                <p style={{ padding: 16, color: "#a8dadc" }}>Sin eventos todavía.</p>
+                <p style={{ padding: 16, color: "#E3B8BE" }}>Sin eventos todavía.</p>
               )}
               {eventos.map((e) => {
-                const color = EVENTO_COLOR[e.tipo] || "#e5b80b";
+                const color = EVENTO_COLOR[e.tipo] || "#7A1F2B";
                 const icono = EVENTO_ICONO[e.tipo] || "•";
                 const fecha = e.timestamp?.toDate ? e.timestamp.toDate() : null;
                 return (
@@ -1332,7 +1335,7 @@ export default function Page() {
                       <div style={{ fontSize: 13, color: "#ffffff" }}>
                         <strong>{e.usuario}</strong> <span style={{ color }}>{EVENTO_LABEL[e.tipo] || e.tipo}</span> <strong>{e.item}</strong>
                       </div>
-                      <div style={{ fontSize: 10, color: "#a8dadc", marginTop: 2 }}>
+                      <div style={{ fontSize: 10, color: "#E3B8BE", marginTop: 2 }}>
                         {tiempoRelativo(fecha)}
                       </div>
                     </div>
@@ -1357,27 +1360,27 @@ export default function Page() {
           zIndex: 50,
           background: "rgba(20, 28, 36, 0.92)",
           backdropFilter: "blur(16px)",
-          border: "2px solid #e5b80b",
+          border: "2px solid #7A1F2B",
           borderRadius: 32,
           padding: "10px 22px",
           display: "flex",
           alignItems: "center",
           gap: 16,
-          boxShadow: "0 10px 35px rgba(0,0,0,0.7), 0 0 20px rgba(229,184,11,0.25)",
+          boxShadow: "0 10px 35px rgba(0,0,0,0.7), 0 0 20px rgba(122,31,43,0.25)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 700, color: "#ffffff" }}>
-          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#e5b80b", boxShadow: "0 0 8px #e5b80b" }} />
-          <span>Filtro activo: <strong style={{ color: "#e5b80b" }}>{ESTADO_FILTRO_LABEL[filtroEstado]}</strong></span>
+          <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#7A1F2B", boxShadow: "0 0 8px #7A1F2B" }} />
+          <span>Filtro activo: <strong style={{ color: "#7A1F2B" }}>{ESTADO_FILTRO_LABEL[filtroEstado]}</strong></span>
         </div>
-        <div style={{ width: 1, height: 18, background: "#457b9d" }} />
+        <div style={{ width: 1, height: 18, background: "#A64A57" }} />
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             style={{
               background: "transparent",
-              border: "1.5px solid #457b9d",
-              color: "#a8dadc",
+              border: "1.5px solid #A64A57",
+              color: "#E3B8BE",
               fontSize: 12,
               fontWeight: 600,
               padding: "6px 14px",
@@ -1390,7 +1393,7 @@ export default function Page() {
           <button
             onClick={() => setColapsados((prev) => ({ ...prev, __all: !prev.__all }))}
             style={{
-              background: "#e5b80b",
+              background: "#7A1F2B",
               border: "none",
               color: "#0c1015",
               fontSize: 12,
@@ -1425,7 +1428,7 @@ export default function Page() {
             className="acocollo-fade-in"
             style={{
               background: "#141c24",
-              border: "2.5px solid #e5b80b",
+              border: "2.5px solid #7A1F2B",
               borderRadius: 16,
               width: "min(1100px, 100%)",
               maxHeight: "85vh",
@@ -1440,7 +1443,7 @@ export default function Page() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "20px 26px",
-                borderBottom: "1.5px solid #e5b80b66",
+                borderBottom: "1.5px solid #7A1F2B66",
               }}
             >
               <div style={{ fontSize: 19, fontWeight: 700, color: "#ffffff" }}>
@@ -1452,9 +1455,9 @@ export default function Page() {
                   fontSize: 14,
                   padding: "7px 14px",
                   borderRadius: 8,
-                  border: "1.5px solid #457b9d",
+                  border: "1.5px solid #A64A57",
                   background: "transparent",
-                  color: "#a8dadc",
+                  color: "#E3B8BE",
                   cursor: "pointer",
                 }}
               >
@@ -1473,7 +1476,7 @@ export default function Page() {
                     boxSizing: "border-box",
                     background: "#0c1015",
                     color: "#ffffff",
-                    border: "1.5px solid #457b9d",
+                    border: "1.5px solid #A64A57",
                     borderRadius: 8,
                     padding: "9px 12px",
                     fontSize: 13,
@@ -1483,11 +1486,11 @@ export default function Page() {
                 />
               )}
               {carpetasForzadas.length === 0 ? (
-                <div style={{ color: "#a8dadc", fontSize: 15, padding: "24px 0" }}>
+                <div style={{ color: "#E3B8BE", fontSize: 15, padding: "24px 0" }}>
                   No hay ninguna carpeta marcada manualmente todavía.
                 </div>
               ) : carpetasForzadasFiltradas.length === 0 ? (
-                <div style={{ color: "#a8dadc", fontSize: 15, padding: "24px 0" }}>
+                <div style={{ color: "#E3B8BE", fontSize: 15, padding: "24px 0" }}>
                   Ninguna carpeta marcada coincide con "{busquedaMarcadas}".
                 </div>
               ) : (
@@ -1498,15 +1501,15 @@ export default function Page() {
                       padding: "16px 18px",
                       marginBottom: 12,
                       background: "#0c1015",
-                      border: "1.5px solid #e5b80b66",
+                      border: "1.5px solid #7A1F2B66",
                       borderRadius: 10,
                     }}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                       <div style={{ minWidth: 0 }}>
                         <div style={{ fontWeight: 700, color: "#ffffff", fontSize: 16 }}>{c.nombre}</div>
-                        <div style={{ fontSize: 13.5, color: "#a8dadc", marginTop: 3 }}>{c.ruta}</div>
-                        <div style={{ fontSize: 11, color: "#e5b80b", marginTop: 4, fontWeight: 700, textTransform: "uppercase" }}>
+                        <div style={{ fontSize: 13.5, color: "#E3B8BE", marginTop: 3 }}>{c.ruta}</div>
+                        <div style={{ fontSize: 11, color: "#7A1F2B", marginTop: 4, fontWeight: 700, textTransform: "uppercase" }}>
                           Forzada como: {c.estado || "completa"}
                         </div>
                       </div>
@@ -1519,9 +1522,9 @@ export default function Page() {
                           fontSize: 12,
                           padding: "5px 12px",
                           borderRadius: 20,
-                          border: "1.5px solid #457b9d",
+                          border: "1.5px solid #A64A57",
                           background: "transparent",
-                          color: marcandoId === c.id ? "#457b9d" : "#a8dadc",
+                          color: marcandoId === c.id ? "#A64A57" : "#E3B8BE",
                           cursor: marcandoId === c.id ? "not-allowed" : "pointer",
                         }}
                       >
@@ -1552,12 +1555,12 @@ function RutaJerarquica({ ruta, nombre, skipLevels = 0 }) {
         const esUltimo = i === mostrar.length - 1;
         return (
           <span key={i} style={{ display: "inline-flex", alignItems: "baseline", gap: 4 }}>
-            {i > 0 && <span style={{ color: "#457b9d", fontSize: 12, fontWeight: 700 }}>›</span>}
+            {i > 0 && <span style={{ color: "#A64A57", fontSize: 12, fontWeight: 700 }}>›</span>}
             <span
               style={{
                 fontSize: esUltimo ? 14.5 : 12,
                 fontWeight: esUltimo ? 800 : 600,
-                color: esUltimo ? "#ffffff" : "#e5b80b",
+                color: esUltimo ? "#ffffff" : "#7A1F2B",
                 background: "transparent",
                 padding: 0,
                 borderRadius: 0,
@@ -1566,7 +1569,7 @@ function RutaJerarquica({ ruta, nombre, skipLevels = 0 }) {
               }}
             >
               {p}
-              {esUltimo && <span style={{ color: "#e5b80b", marginLeft: 4 }}>↗</span>}
+              {esUltimo && <span style={{ color: "#7A1F2B", marginLeft: 4 }}>↗</span>}
             </span>
           </span>
         );
@@ -1581,7 +1584,7 @@ function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0,
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (pct / 100) * circumference;
-  const color = pct >= 100 ? "#e5b80b" : pct >= 50 ? "#e67e22" : "#c0392b";
+  const color = pct >= 100 ? "#7A1F2B" : pct >= 50 ? "#e67e22" : "#c0392b";
 
   return (
     <div
@@ -1594,7 +1597,7 @@ function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0,
         padding: "18px 12px",
         borderRadius: 12,
         background: "#141c24",
-        border: "1.5px solid #e5b80b66",
+        border: "1.5px solid #7A1F2B66",
         animationDelay: `${delay}ms`,
         boxShadow: "0 4px 16px rgba(0,0,0,.4)",
       }}
@@ -1620,7 +1623,7 @@ function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0,
       <div style={{ fontSize: 13, fontWeight: 700, color: "#ffffff", textAlign: "center", lineHeight: 1.3, maxWidth: 150 }}>
         {nombre}
       </div>
-      <div style={{ fontSize: 12, color: "#a8dadc", fontWeight: 700 }}>{total} carpetas</div>
+      <div style={{ fontSize: 12, color: "#E3B8BE", fontWeight: 700 }}>{total} carpetas</div>
       <div style={{ fontSize: 13, textAlign: "center", display: "flex", gap: 10, marginTop: 4 }}>
         <span style={{ color: "#e67e22", fontWeight: 700 }}>{incompletas} inc.</span>
         <span style={{ color: "#c0392b", fontWeight: 700 }}>{vacias} vacías</span>
@@ -1649,7 +1652,7 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
         gap: Math.round(size * 0.05),
         padding: "18px 14px",
         borderRadius: 14,
-        border: `2.5px solid ${active ? color : "#e5b80b66"}`,
+        border: `2.5px solid ${active ? color : "#7A1F2B66"}`,
         background: active ? color + "25" : "#141c24",
         cursor: "pointer",
         transition: "all .15s ease",
@@ -1678,7 +1681,7 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
       <div style={{ fontSize: fontLabel, fontWeight: 700, color: active ? color : "#ffffff", textAlign: "center", marginTop: 4 }}>
         {area}
       </div>
-      <div style={{ fontSize: fontCount, color: "#a8dadc", fontWeight: 700 }}>{total} carpetas</div>
+      <div style={{ fontSize: fontCount, color: "#E3B8BE", fontWeight: 700 }}>{total} carpetas</div>
       {tamano && (
         <div style={{ fontSize: 14, textAlign: "center", display: "flex", gap: 12, marginTop: 6 }}>
           <span style={{ color: "#e67e22", fontWeight: 700 }}>{incompletas} inc.</span>
@@ -1691,14 +1694,14 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
 
 function AreaProgressPanel({ area, stats, color }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "#141c24", border: `2.5px solid #e5b80b`, borderRadius: 12, padding: "18px 22px", marginBottom: 14, boxShadow: `0 4px 20px rgba(229,184,11,.2)` }}>
-      <div style={{ fontSize: 16, fontWeight: 800, color: "#e5b80b", textTransform: "uppercase", letterSpacing: 0.5 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "#141c24", border: `2.5px solid #7A1F2B`, borderRadius: 12, padding: "18px 22px", marginBottom: 14, boxShadow: `0 4px 20px rgba(122,31,43,.2)` }}>
+      <div style={{ fontSize: 16, fontWeight: 800, color: "#7A1F2B", textTransform: "uppercase", letterSpacing: 0.5 }}>
         {area}
       </div>
       <div style={{ fontSize: 20, fontWeight: 700, color: "#ffffff", lineHeight: 1.3 }}>
-        <span style={{ color: "#e5b80b", fontWeight: 800 }}>{stats.completas}</span> completas de <strong style={{ color: "#ffffff" }}>{stats.total}</strong> carpetas
+        <span style={{ color: "#7A1F2B", fontWeight: 800 }}>{stats.completas}</span> completas de <strong style={{ color: "#ffffff" }}>{stats.total}</strong> carpetas
       </div>
-      <div style={{ fontSize: 15, fontWeight: 600, color: "#a8dadc", display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+      <div style={{ fontSize: 15, fontWeight: 600, color: "#E3B8BE", display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
         <span>
           <strong style={{ color: "#e67e22", fontWeight: 700, fontSize: 17 }}>{stats.incompletas}</strong> incompletas
         </span>
@@ -1718,7 +1721,7 @@ function MiniDona({ completas, total }) {
   const circumference = 2 * Math.PI * radius;
   const pct = total > 0 ? completas / total : 0;
   const offset = circumference - pct * circumference;
-  const color = pct >= 1 ? "#e5b80b" : pct > 0 ? "#e67e22" : "#c0392b";
+  const color = pct >= 1 ? "#7A1F2B" : pct > 0 ? "#e67e22" : "#c0392b";
 
   return (
     <svg width={size} height={size}>
@@ -1744,9 +1747,9 @@ function chipStyle(active, color) {
     fontSize: 13,
     padding: "8px 16px",
     borderRadius: 24,
-    border: `1.5px solid ${active ? color : "#457b9d"}`,
+    border: `1.5px solid ${active ? color : "#A64A57"}`,
     background: active ? color + "33" : "#141c24",
-    color: active ? color : "#a8dadc",
+    color: active ? color : "#E3B8BE",
     fontWeight: 600,
     cursor: "pointer",
     boxShadow: active ? `0 0 12px ${color}66` : "none",
@@ -1804,7 +1807,7 @@ function Card({ label, value, color, grande }) {
       }}
     >
       <div style={{ fontSize: grande ? 44 : 28, fontWeight: 700, color: "#ffffff", textShadow: `0 0 14px ${color}66` }}>{valorAnimado}</div>
-      <div style={{ fontSize: grande ? 15 : 12, color: "#a8dadc", letterSpacing: 0.3 }}>{label}</div>
+      <div style={{ fontSize: grande ? 15 : 12, color: "#E3B8BE", letterSpacing: 0.3 }}>{label}</div>
     </div>
   );
 }
@@ -1825,7 +1828,7 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
     <div
       style={{
         background: "#141c24",
-        border: "2px solid #e5b80b66",
+        border: "2px solid #7A1F2B66",
         borderRadius: 12,
         padding: grande ? "28px 32px" : "16px 18px",
         boxShadow: "0 4px 20px rgba(0,0,0,.5)",
@@ -1833,11 +1836,11 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
     >
       <div style={{ fontSize: grande ? 20 : 15, fontWeight: 700, color: "#ffffff", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span>📈 Tendencia de avance {historial.length > 0 ? `(${historial.length} días)` : ""}</span>
-        <span style={{ fontSize: 11, color: "#a8dadc", fontWeight: 400 }}>Desliza horizontalmente ↔</span>
+        <span style={{ fontSize: 11, color: "#E3B8BE", fontWeight: 400 }}>Desliza horizontalmente ↔</span>
       </div>
 
       {historial.length < 2 ? (
-        <div style={{ fontSize: 12, color: "#a8dadc", padding: "20px 0" }}>
+        <div style={{ fontSize: 12, color: "#E3B8BE", padding: "20px 0" }}>
           Todavía no hay suficiente historial.
         </div>
       ) : (
@@ -1860,14 +1863,14 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
           const pasoEtiqueta = 1;
 
           return (
-            <div style={{ overflowX: "auto", overflowY: "hidden", width: "100%", paddingBottom: 8, scrollbarWidth: "thin", scrollbarColor: "#457b9d #141c24" }}>
+            <div style={{ overflowX: "auto", overflowY: "hidden", width: "100%", paddingBottom: 8, scrollbarWidth: "thin", scrollbarColor: "#A64A57 #141c24" }}>
               <svg viewBox={`0 0 ${ancho} ${alto}`} style={{ width: `${ancho}px`, height: `${alto}px`, display: "block" }}>
                 {[0, 25, 50, 75, 100].map((v) => {
                   const y = paddingArriba + altoLinea - paddingArriba - (v / 100) * (altoLinea - paddingArriba * 2);
                   return (
                     <g key={v}>
-                      <line x1={paddingIzq - 10} y1={y} x2={ancho - paddingDer} y2={y} stroke="#e5b80b33" strokeWidth="1" strokeDasharray="3,4" />
-                      <text x={paddingIzq - 16} y={y + 4} textAnchor="end" fontSize={grande ? 14 : 12} fill="#a8dadc" fontWeight="600">
+                      <line x1={paddingIzq - 10} y1={y} x2={ancho - paddingDer} y2={y} stroke="#7A1F2B33" strokeWidth="1" strokeDasharray="3,4" />
+                      <text x={paddingIzq - 16} y={y + 4} textAnchor="end" fontSize={grande ? 14 : 12} fill="#E3B8BE" fontWeight="600">
                         {v}%
                       </text>
                     </g>
@@ -1878,28 +1881,28 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                 <path
                   d={pathLinea}
                   fill="none"
-                  stroke="#e5b80b"
+                  stroke="#7A1F2B"
                   strokeWidth={grande ? "4.5" : "3.5"}
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
                 {puntos.map((p, i) => (
-                  <circle key={i} cx={p.x} cy={p.y} r={i === puntos.length - 1 ? (grande ? 7 : 5.5) : (grande ? 5 : 3.5)} fill="#e5b80b" />
+                  <circle key={i} cx={p.x} cy={p.y} r={i === puntos.length - 1 ? (grande ? 7 : 5.5) : (grande ? 5 : 3.5)} fill="#7A1F2B" />
                 ))}
 
                 <defs>
                   <linearGradient id="tendenciaGradientGold" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#e5b80b" />
+                    <stop offset="0%" stopColor="#7A1F2B" />
                     <stop offset="100%" stopColor="#141c24" stopOpacity="0" />
                   </linearGradient>
                 </defs>
 
-                <text x={puntos[puntos.length - 1].x} y={puntos[puntos.length - 1].y - 14} textAnchor="end" fontSize={grande ? 18 : 15} fontWeight="700" fill="#e5b80b">
+                <text x={puntos[puntos.length - 1].x} y={puntos[puntos.length - 1].y - 14} textAnchor="end" fontSize={grande ? 18 : 15} fontWeight="700" fill="#7A1F2B">
                   {puntos[puntos.length - 1].pct}%
                 </text>
 
-                <line x1={paddingIzq - 10} y1={altoLinea + 8} x2={ancho - paddingDer} y2={altoLinea + 8} stroke="#e5b80b44" strokeWidth="1" />
-                <text x={paddingIzq} y={altoLinea + 18} fontSize={grande ? 12 : 11} fill="#a8dadc" fontWeight="700">
+                <line x1={paddingIzq - 10} y1={altoLinea + 8} x2={ancho - paddingDer} y2={altoLinea + 8} stroke="#7A1F2B44" strokeWidth="1" />
+                <text x={paddingIzq} y={altoLinea + 18} fontSize={grande ? 12 : 11} fill="#E3B8BE" fontWeight="700">
                   INCIDENCIAS DEL DRIVE POR DÍA
                 </text>
                 {puntos.map((p, i) => {
@@ -1912,7 +1915,7 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                       width="8"
                       height={alturaBarrita}
                       rx="2"
-                      fill={p.incidencias > 0 ? "#e5b80b" : "#457b9d66"}
+                      fill={p.incidencias > 0 ? "#7A1F2B" : "#A64A5766"}
                     />
                   );
                 })}
@@ -1984,7 +1987,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
 
   function intensidad(count) {
     if (count === 0) return "#0c1015";
-    if (count >= 11) return "#e5b80b";
+    if (count >= 11) return "#7A1F2B";
     if (count >= 4) return "#e67e22";
     return "#c0392b";
   }
@@ -2026,7 +2029,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
     <div
       style={{
         background: "#141c24",
-        border: "2px solid #e5b80b66",
+        border: "2px solid #7A1F2B66",
         borderRadius: 12,
         padding: grande ? "22px 26px" : "16px 18px",
         overflowX: "auto",
@@ -2068,7 +2071,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
         <div style={{ display: "flex", flexDirection: "column", gap: 16, minWidth: 240 }}>
           {tiposOrdenados.length > 0 && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#a8dadc", textTransform: "uppercase", letterSpacing: 0.4 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#E3B8BE", textTransform: "uppercase", letterSpacing: 0.4 }}>
                 Resumen del período
               </div>
               {tiposOrdenados.map((tipo) => (
@@ -2078,9 +2081,9 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                       width: 28,
                       height: 28,
                       borderRadius: "50%",
-                      background: (EVENTO_COLOR[tipo] || "#e5b80b") + "33",
-                      border: `1.5px solid ${EVENTO_COLOR[tipo] || "#e5b80b"}`,
-                      color: EVENTO_COLOR[tipo] || "#e5b80b",
+                      background: (EVENTO_COLOR[tipo] || "#7A1F2B") + "33",
+                      border: `1.5px solid ${EVENTO_COLOR[tipo] || "#7A1F2B"}`,
+                      color: EVENTO_COLOR[tipo] || "#7A1F2B",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -2091,7 +2094,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                     {EVENTO_ICONO[tipo] || "•"}
                   </span>
                   <strong style={{ color: "#ffffff" }}>{conteoPorTipoTotal[tipo]}</strong>
-                  <span style={{ color: "#a8dadc" }}>{EVENTO_LABEL[tipo] || tipo}</span>
+                  <span style={{ color: "#E3B8BE" }}>{EVENTO_LABEL[tipo] || tipo}</span>
                 </div>
               ))}
             </div>
@@ -2108,7 +2111,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
             top: tooltipPos ? tooltipPos.top : tooltip.anclaY,
             visibility: tooltipPos ? "visible" : "hidden",
             background: "#141c24",
-            border: "2px solid #e5b80b",
+            border: "2px solid #7A1F2B",
             color: "#ffffff",
             padding: "8px 12px",
             borderRadius: 7,
@@ -2143,7 +2146,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
             className="acocollo-fade-in"
             style={{
               background: "#141c24",
-              border: "2.5px solid #e5b80b",
+              border: "2.5px solid #7A1F2B",
               borderRadius: 16,
               width: "min(750px, 100%)",
               maxHeight: "85vh",
@@ -2158,14 +2161,14 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "20px 26px",
-                borderBottom: "1.5px solid #e5b80b66",
+                borderBottom: "1.5px solid #7A1F2B66",
               }}
             >
               <div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: "#ffffff" }}>
                   Actividad del {formatearFechaLarga(diaSeleccionado.fecha)}
                 </div>
-                <div style={{ fontSize: 12, color: "#a8dadc", marginTop: 2 }}>
+                <div style={{ fontSize: 12, color: "#E3B8BE", marginTop: 2 }}>
                   {diaSeleccionado.count} evento{diaSeleccionado.count !== 1 ? "s" : ""} registrado{diaSeleccionado.count !== 1 ? "s" : ""}
                 </div>
               </div>
@@ -2175,9 +2178,9 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                   fontSize: 14,
                   padding: "7px 14px",
                   borderRadius: 8,
-                  border: "1.5px solid #457b9d",
+                  border: "1.5px solid #A64A57",
                   background: "transparent",
-                  color: "#a8dadc",
+                  color: "#E3B8BE",
                   cursor: "pointer",
                 }}
               >
@@ -2186,17 +2189,17 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
             </div>
             <div style={{ overflowY: "auto", padding: "16px 26px 26px", flex: 1 }}>
               {eventosDelDia === null ? (
-                <div style={{ textAlign: "center", padding: "40px 0", color: "#a8dadc" }}>
+                <div style={{ textAlign: "center", padding: "40px 0", color: "#E3B8BE" }}>
                   Cargando eventos del día...
                 </div>
               ) : eventosDelDia.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px 0", color: "#a8dadc" }}>
+                <div style={{ textAlign: "center", padding: "40px 0", color: "#E3B8BE" }}>
                   No se encontraron eventos detallados para esta fecha.
                 </div>
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                   {eventosDelDia.map((ev) => {
-                    const color = EVENTO_COLOR[ev.tipo] || "#e5b80b";
+                    const color = EVENTO_COLOR[ev.tipo] || "#7A1F2B";
                     const icono = EVENTO_ICONO[ev.tipo] || "•";
                     const fechaEv = ev.timestamp?.toDate ? ev.timestamp.toDate() : null;
                     const horaStr = fechaEv ? fechaEv.toLocaleTimeString("es-PE", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "";
@@ -2205,7 +2208,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                         key={ev.id}
                         style={{
                           background: "#0c1015",
-                          border: "1.5px solid #e5b80b66",
+                          border: "1.5px solid #7A1F2B66",
                           borderRadius: 10,
                           padding: "12px 16px",
                           display: "flex",
@@ -2233,14 +2236,14 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 14, color: "#ffffff" }}>
-                            <strong>{ev.usuario || "Usuario"}</strong> <span style={{ color }}>{EVENTO_LABEL[ev.tipo] || ev.tipo}</span> <strong style={{ color: "#e5b80b" }}>{ev.item}</strong>
+                            <strong>{ev.usuario || "Usuario"}</strong> <span style={{ color }}>{EVENTO_LABEL[ev.tipo] || ev.tipo}</span> <strong style={{ color: "#7A1F2B" }}>{ev.item}</strong>
                           </div>
                           {ev.ruta && (
-                            <div style={{ fontSize: 12, color: "#a8dadc", marginTop: 3, wordBreak: "break-all" }}>
+                            <div style={{ fontSize: 12, color: "#E3B8BE", marginTop: 3, wordBreak: "break-all" }}>
                               📁 {ev.ruta}
                             </div>
                           )}
-                          <div style={{ fontSize: 11, color: "#e5b80b", marginTop: 6, display: "flex", justifyContent: "space-between" }}>
+                          <div style={{ fontSize: 11, color: "#7A1F2B", marginTop: 6, display: "flex", justifyContent: "space-between" }}>
                             <span>{ev.tipo}</span>
                             <span>{horaStr}</span>
                           </div>
