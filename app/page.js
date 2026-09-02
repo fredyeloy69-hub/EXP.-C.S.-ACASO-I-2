@@ -1,8 +1,8 @@
 "use client";
 
-import { generarReportePorArea, generarReporteConsolidadoGlobal } from "../lib/exportarReporte";
-import { generarReporteExcelPorArea } from "../lib/exportarExcel";
-import { LOGO_PUNO_BASE64 } from "../lib/logoPuno";
+import { useEffect, useState, useRef } from "react";
+import { db } from "../lib/firebaseClient";
+import {
   collection,
   doc,
   onSnapshot,
@@ -12,9 +12,9 @@ import { LOGO_PUNO_BASE64 } from "../lib/logoPuno";
   where,
   getDocs,
 } from "firebase/firestore";
-import { generarReportePorArea, generarReporteConsolidadoGlobal } from "@/lib/exportarReporte";
-import { generarReporteExcelPorArea } from "@/lib/exportarExcel";
-import { LOGO_PUNO_BASE64 } from "@/lib/logoPuno";
+import { generarReportePorArea, generarReporteConsolidadoGlobal } from "../lib/exportarReporte";
+import { generarReporteExcelPorArea } from "../lib/exportarExcel";
+import { LOGO_PUNO_BASE64 } from "../lib/logoPuno";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -145,8 +145,8 @@ export default function Page() {
   const [mostrarMarcadas, setMostrarMarcadas] = useState(false);
   const [usuarioGoogle, setUsuarioGoogle] = useState(null);
   const [rangoDiasHeatmap, setRangoDiasHeatmap] = useState(84);
-  const [busquedaMarcadas, setBusquedaMarcadas] = useState(""); // 🔍 Buscador dentro del modal de marcadas manualmente
-  const [tipoExportacion, setTipoExportacion] = useState("todas"); // filtro para exportar PDF/Excel
+  const [busquedaMarcadas, setBusquedaMarcadas] = useState(""); 
+  const [tipoExportacion, setTipoExportacion] = useState("todas"); 
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -233,7 +233,6 @@ export default function Page() {
     }
   }
 
-  // estado: "completa" | "incompleta" | null (null = revertir al cálculo automático)
   async function handleMarcarCompleta(folderId, estado, folderName, folderRuta) {
     let user = auth.currentUser;
     if (!user) {
@@ -1162,7 +1161,6 @@ export default function Page() {
                           {g.area}
                         </span>
                         <span style={{ color: "#e5b80b", fontSize: 12 }}>›</span>
-                        {/* TÍTULO PRINCIPAL DE LA ESPECIALIDAD RESALTADO EN DORADO CON TEXTO OSCURO */}
                         <span
                           style={{
                             fontSize: 15,
