@@ -145,8 +145,8 @@ export default function Page() {
   const [mostrarMarcadas, setMostrarMarcadas] = useState(false);
   const [usuarioGoogle, setUsuarioGoogle] = useState(null);
   const [rangoDiasHeatmap, setRangoDiasHeatmap] = useState(84);
-  const [busquedaMarcadas, setBusquedaMarcadas] = useState(""); 
-  const [tipoExportacion, setTipoExportacion] = useState("todas"); 
+  const [busquedaMarcadas, setBusquedaMarcadas] = useState("");
+  const [tipoExportacion, setTipoExportacion] = useState("todas");
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -1027,7 +1027,7 @@ export default function Page() {
               <AreaProgressPanel area={filtroArea} stats={areaStats[filtroArea]} color={colorForArea(filtroArea)} />
             )}
 
-            {/* FILTRO PARA EXPORTAR (afecta a los botones PDF/Excel de esta página) */}
+            {/* FILTRO PARA EXPORTAR */}
             <div
               style={{
                 display: "flex",
