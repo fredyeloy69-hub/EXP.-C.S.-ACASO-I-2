@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/lib/firebaseAdmin";
+import { adminDb } from "../../../lib/firebaseAdmin";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
-import { fechaLimaISO } from "@/lib/syncEngine";
+import { fechaLimaISO } from "../../../lib/syncEngine";
 
 // Marca (o desmarca) una carpeta manualmente como "completa" o "incompleta" —
 // para casos excepcionales donde no aplica tener un editable (ej. documentos
