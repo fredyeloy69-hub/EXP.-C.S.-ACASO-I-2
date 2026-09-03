@@ -37,8 +37,8 @@ const AREA_COLORS = [
   "#e67e22",
   "#c0392b",
   "#A64A57",
-  "#1d3557",
-  "#f1c40f",
+  "#4A0E17",
+  "#8C3745",
   "#7A1F2B",
 ];
 
@@ -52,7 +52,7 @@ const ESTADO_OPTIONS = [
   { value: "pendientes", label: "Pendientes", color: "#7A1F2B" },
   { value: "incompleta", label: "Incompletas", color: "#e67e22" },
   { value: "vacia", label: "Vacías", color: "#c0392b" },
-  { value: "completa", label: "Completas", color: "#f1c40f" },
+  { value: "completa", label: "Completas", color: "#8C3745" },
   { value: "todas", label: "Todas", color: "#A64A57" },
 ];
 
@@ -72,7 +72,7 @@ const EVENTO_COLOR = {
   archivo_subido: "#7A1F2B",
   archivo_reemplazado: "#e67e22",
   archivo_borrado: "#c0392b",
-  carpeta_creada: "#264653",
+  carpeta_creada: "#4A0E17",
   carpeta_borrada: "#c0392b",
   carpeta_movida: "#e67e22",
   carpeta_marcada_completa: "#7A1F2B",
@@ -420,13 +420,13 @@ export default function Page() {
         .acocollo-fondo-animado {
           background: linear-gradient(
             -45deg,
-            #0c1015,
-            #141c24,
-            #1f2d3d,
-            #2b3e55,
-            #1f2d3d,
-            #141c24,
-            #0c1015
+            #0D0607,
+            #1A0E10,
+            #3D1A20,
+            #5C1A22,
+            #3D1A20,
+            #1A0E10,
+            #0D0607
           );
           background-size: 500% 500%;
           animation: acocolloGradiente 5s ease infinite;
@@ -587,7 +587,7 @@ export default function Page() {
                   padding: "14px 18px",
                   borderRadius: 14,
                   border: "2px solid #7A1F2B",
-                  background: "#141c24",
+                  background: "#1A0E10",
                   color: "#7A1F2B",
                   cursor: "pointer",
                   display: "flex",
@@ -610,7 +610,7 @@ export default function Page() {
                 padding: "14px 18px",
                 borderRadius: 14,
                 border: "2px solid #7A1F2B",
-                background: "#141c24",
+                background: "#1A0E10",
                 color: exportandoGlobal ? "#E3B8BE" : "#7A1F2B",
                 cursor: exportandoGlobal || carpetas.length === 0 ? "not-allowed" : "pointer",
                 display: "flex",
@@ -632,7 +632,7 @@ export default function Page() {
                 padding: "14px 20px",
                 borderRadius: 14,
                 border: modoPresentacion ? "2.5px solid #7A1F2B" : "1.5px solid #A64A57",
-                background: modoPresentacion ? "#7A1F2B33" : "#141c24",
+                background: modoPresentacion ? "#7A1F2B33" : "#1A0E10",
                 color: modoPresentacion ? "#7A1F2B" : "#ffffff",
                 cursor: "pointer",
                 display: "flex",
@@ -654,7 +654,7 @@ export default function Page() {
                   padding: "22px 42px",
                   borderRadius: 16,
                   border: "2.5px solid #7A1F2B",
-                  background: sincronizando ? "#141c24" : "linear-gradient(90deg,#7A1F2B55,#1f2d3d55)",
+                  background: sincronizando ? "#1A0E10" : "linear-gradient(90deg,#7A1F2B55,#3D1A2055)",
                   color: sincronizando ? "#E3B8BE" : "#7A1F2B",
                   cursor: sincronizando ? "not-allowed" : "pointer",
                   boxShadow: sincronizando ? "none" : "0 0 35px rgba(122,31,43,.6)",
@@ -685,7 +685,7 @@ export default function Page() {
         <div
           style={{
             marginBottom: 20,
-            background: "#141c24",
+            background: "#1A0E10",
             borderRadius: 12,
             padding: "16px 18px",
             border: "2px solid #7A1F2B66",
@@ -704,7 +704,7 @@ export default function Page() {
           <div
             style={{
               height: 34,
-              background: "#0c1015",
+              background: "#0D0607",
               borderRadius: 17,
               overflow: "hidden",
               boxShadow: "inset 0 2px 6px rgba(0,0,0,.6), 0 0 0 1px #7A1F2B66",
@@ -730,7 +730,7 @@ export default function Page() {
         <div
           style={{
             marginBottom: 32,
-            background: "#141c24",
+            background: "#1A0E10",
             borderRadius: 12,
             padding: "16px 18px",
             border: "2px solid #7A1F2B66",
@@ -751,7 +751,7 @@ export default function Page() {
           <div
             style={{
               height: 22,
-              background: "#0c1015",
+              background: "#0D0607",
               borderRadius: 11,
               overflow: "hidden",
               boxShadow: "inset 0 2px 6px rgba(0,0,0,.6), 0 0 0 1px #7A1F2B66",
@@ -797,7 +797,7 @@ export default function Page() {
                   padding: "5px 12px",
                   borderRadius: 16,
                   border: `1px solid ${rangoDiasHeatmap === btn.val ? "#7A1F2B" : "#A64A57"}`,
-                  background: rangoDiasHeatmap === btn.val ? "#7A1F2B33" : "#141c24",
+                  background: rangoDiasHeatmap === btn.val ? "#7A1F2B33" : "#1A0E10",
                   color: rangoDiasHeatmap === btn.val ? "#7A1F2B" : "#E3B8BE",
                   fontWeight: 600,
                   cursor: "pointer",
@@ -875,7 +875,7 @@ export default function Page() {
                       display: "flex",
                       alignItems: "center",
                       gap: 8,
-                      background: "#141c24",
+                      background: "#1A0E10",
                       borderRadius: 8,
                       borderBottom: `2.5px solid ${colorForArea(a)}`,
                     }}
@@ -938,7 +938,7 @@ export default function Page() {
               style={{
                 width: "100%",
                 boxSizing: "border-box",
-                background: "#141c24",
+                background: "#1A0E10",
                 color: "#ffffff",
                 border: "1.5px solid #A64A57",
                 borderRadius: 8,
@@ -960,7 +960,7 @@ export default function Page() {
                       padding: "6px 12px",
                       borderRadius: "20px 0 0 20px",
                       border: "1.5px solid #A64A57",
-                      background: "#141c24",
+                      background: "#1A0E10",
                       color: exportandoArea === a ? "#E3B8BE" : "#ffffff",
                       fontWeight: 600,
                       cursor: exportandoArea === a ? "not-allowed" : "pointer",
@@ -978,7 +978,7 @@ export default function Page() {
                       borderRadius: "0 20px 20px 0",
                       border: "1.5px solid #A64A57",
                       borderLeft: "none",
-                      background: "#141c24",
+                      background: "#1A0E10",
                       color: exportandoExcelArea === a ? "#E3B8BE" : "#7A1F2B",
                       fontWeight: 600,
                       cursor: exportandoExcelArea === a ? "not-allowed" : "pointer",
@@ -1038,7 +1038,7 @@ export default function Page() {
                 marginBottom: 14,
                 flexWrap: "wrap",
                 alignItems: "center",
-                background: "#141c24",
+                background: "#1A0E10",
                 border: "1.5px solid #7A1F2B66",
                 borderRadius: 10,
                 padding: "10px 14px",
@@ -1087,7 +1087,7 @@ export default function Page() {
               key={`${filtroEstado}-${filtroArea}-${busqueda}`}
               className="acocollo-fade-in"
               style={{
-                background: "#0c1015",
+                background: "#0D0607",
                 borderRadius: 12,
                 overflow: "hidden",
                 border: "2px solid #7A1F2B66",
@@ -1146,10 +1146,10 @@ export default function Page() {
                         onClick={() => toggleGrupo(key)}
                         style={{
                           padding: "12px 16px 12px 14px",
-                          background: "#141c24",
+                          background: "#1A0E10",
                           borderLeft: `5px solid ${vaciasGrupo > 0 ? "#c0392b" : tienePendientes ? "#e67e22" : "#7A1F2B"}`,
                           borderTop: "1px solid #7A1F2B44",
-                          borderBottom: "1px solid #0c1015",
+                          borderBottom: "1px solid #0D0607",
                           display: "flex",
                           alignItems: "baseline",
                           gap: 8,
@@ -1168,7 +1168,7 @@ export default function Page() {
                           style={{
                             fontSize: 15,
                             fontWeight: 800,
-                            color: "#0c1015",
+                            color: "#0D0607",
                             background: "#7A1F2B",
                             padding: "3px 10px",
                             borderRadius: "6px",
@@ -1209,12 +1209,12 @@ export default function Page() {
                             onClick={() => window.open(driveUrl, "_blank", "noopener,noreferrer")}
                             style={{
                               padding: "12px 16px 12px 24px",
-                              borderBottom: "1px solid #1a2533",
+                              borderBottom: "1px solid #2A1418",
                               cursor: "pointer",
                               animationDelay: `${(grupoIndex * 35) + (itemIndex * 20)}ms`,
                               transition: "background .15s ease",
                             }}
-                            onMouseEnter={(e) => (e.currentTarget.style.background = "#1b2736")}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = "#241014")}
                             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                           >
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
@@ -1287,7 +1287,7 @@ export default function Page() {
             <h2 style={{ fontSize: 16, color: "#ffffff", marginBottom: 8 }}>Actividad reciente</h2>
             <div
               style={{
-                background: "#0c1015",
+                background: "#0D0607",
                 borderRadius: 12,
                 maxHeight: 480,
                 overflowY: "auto",
@@ -1309,7 +1309,7 @@ export default function Page() {
                       display: "flex",
                       gap: 10,
                       padding: "10px 14px",
-                      borderBottom: "1px solid #1a2533",
+                      borderBottom: "1px solid #2A1418",
                     }}
                   >
                     <div
@@ -1395,7 +1395,7 @@ export default function Page() {
             style={{
               background: "#7A1F2B",
               border: "none",
-              color: "#0c1015",
+              color: "#0D0607",
               fontSize: 12,
               fontWeight: 800,
               padding: "6px 14px",
@@ -1427,7 +1427,7 @@ export default function Page() {
             onClick={(e) => e.stopPropagation()}
             className="acocollo-fade-in"
             style={{
-              background: "#141c24",
+              background: "#1A0E10",
               border: "2.5px solid #7A1F2B",
               borderRadius: 16,
               width: "min(1100px, 100%)",
@@ -1474,7 +1474,7 @@ export default function Page() {
                   style={{
                     width: "100%",
                     boxSizing: "border-box",
-                    background: "#0c1015",
+                    background: "#0D0607",
                     color: "#ffffff",
                     border: "1.5px solid #A64A57",
                     borderRadius: 8,
@@ -1500,7 +1500,7 @@ export default function Page() {
                     style={{
                       padding: "16px 18px",
                       marginBottom: 12,
-                      background: "#0c1015",
+                      background: "#0D0607",
                       border: "1.5px solid #7A1F2B66",
                       borderRadius: 10,
                     }}
@@ -1596,14 +1596,14 @@ function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0,
         gap: 8,
         padding: "18px 12px",
         borderRadius: 12,
-        background: "#141c24",
+        background: "#1A0E10",
         border: "1.5px solid #7A1F2B66",
         animationDelay: `${delay}ms`,
         boxShadow: "0 4px 16px rgba(0,0,0,.4)",
       }}
     >
       <svg width={size} height={size}>
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0c1015" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0D0607" strokeWidth={stroke} />
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -1653,7 +1653,7 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
         padding: "18px 14px",
         borderRadius: 14,
         border: `2.5px solid ${active ? color : "#7A1F2B66"}`,
-        background: active ? color + "25" : "#141c24",
+        background: active ? color + "25" : "#1A0E10",
         cursor: "pointer",
         transition: "all .15s ease",
         width: tamano ? "100%" : "auto",
@@ -1661,7 +1661,7 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
       }}
     >
       <svg width={size} height={size}>
-        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0c1015" strokeWidth={stroke} />
+        <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0D0607" strokeWidth={stroke} />
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -1694,7 +1694,7 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
 
 function AreaProgressPanel({ area, stats, color }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "#141c24", border: `2.5px solid #7A1F2B`, borderRadius: 12, padding: "18px 22px", marginBottom: 14, boxShadow: `0 4px 20px rgba(122,31,43,.2)` }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 8, background: "#1A0E10", border: `2.5px solid #7A1F2B`, borderRadius: 12, padding: "18px 22px", marginBottom: 14, boxShadow: `0 4px 20px rgba(122,31,43,.2)` }}>
       <div style={{ fontSize: 16, fontWeight: 800, color: "#7A1F2B", textTransform: "uppercase", letterSpacing: 0.5 }}>
         {area}
       </div>
@@ -1725,7 +1725,7 @@ function MiniDona({ completas, total }) {
 
   return (
     <svg width={size} height={size}>
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0c1015" strokeWidth={stroke} />
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="#0D0607" strokeWidth={stroke} />
       <circle
         cx={size / 2}
         cy={size / 2}
@@ -1748,7 +1748,7 @@ function chipStyle(active, color) {
     padding: "8px 16px",
     borderRadius: 24,
     border: `1.5px solid ${active ? color : "#A64A57"}`,
-    background: active ? color + "33" : "#141c24",
+    background: active ? color + "33" : "#1A0E10",
     color: active ? color : "#E3B8BE",
     fontWeight: 600,
     cursor: "pointer",
@@ -1798,7 +1798,7 @@ function Card({ label, value, color, grande }) {
     <div
       className="acocollo-tarjeta-viva"
       style={{
-        background: "#141c24",
+        background: "#1A0E10",
         borderRadius: 12,
         padding: grande ? "26px" : "18px",
         border: `1.5px solid ${color}55`,
@@ -1827,7 +1827,7 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
   return (
     <div
       style={{
-        background: "#141c24",
+        background: "#1A0E10",
         border: "2px solid #7A1F2B66",
         borderRadius: 12,
         padding: grande ? "28px 32px" : "16px 18px",
@@ -1863,7 +1863,7 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
           const pasoEtiqueta = 1;
 
           return (
-            <div style={{ overflowX: "auto", overflowY: "hidden", width: "100%", paddingBottom: 8, scrollbarWidth: "thin", scrollbarColor: "#A64A57 #141c24" }}>
+            <div style={{ overflowX: "auto", overflowY: "hidden", width: "100%", paddingBottom: 8, scrollbarWidth: "thin", scrollbarColor: "#A64A57 #1A0E10" }}>
               <svg viewBox={`0 0 ${ancho} ${alto}`} style={{ width: `${ancho}px`, height: `${alto}px`, display: "block" }}>
                 {[0, 25, 50, 75, 100].map((v) => {
                   const y = paddingArriba + altoLinea - paddingArriba - (v / 100) * (altoLinea - paddingArriba * 2);
@@ -1893,7 +1893,7 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                 <defs>
                   <linearGradient id="tendenciaGradientGold" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#7A1F2B" />
-                    <stop offset="100%" stopColor="#141c24" stopOpacity="0" />
+                    <stop offset="100%" stopColor="#1A0E10" stopOpacity="0" />
                   </linearGradient>
                 </defs>
 
@@ -1986,7 +1986,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
   }
 
   function intensidad(count) {
-    if (count === 0) return "#0c1015";
+    if (count === 0) return "#0D0607";
     if (count >= 11) return "#7A1F2B";
     if (count >= 4) return "#e67e22";
     return "#c0392b";
@@ -2028,7 +2028,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
   return (
     <div
       style={{
-        background: "#141c24",
+        background: "#1A0E10",
         border: "2px solid #7A1F2B66",
         borderRadius: 12,
         padding: grande ? "22px 26px" : "16px 18px",
@@ -2110,7 +2110,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
             left: tooltipPos ? tooltipPos.left : tooltip.anclaX,
             top: tooltipPos ? tooltipPos.top : tooltip.anclaY,
             visibility: tooltipPos ? "visible" : "hidden",
-            background: "#141c24",
+            background: "#1A0E10",
             border: "2px solid #7A1F2B",
             color: "#ffffff",
             padding: "8px 12px",
@@ -2145,7 +2145,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
             onClick={(e) => e.stopPropagation()}
             className="acocollo-fade-in"
             style={{
-              background: "#141c24",
+              background: "#1A0E10",
               border: "2.5px solid #7A1F2B",
               borderRadius: 16,
               width: "min(750px, 100%)",
@@ -2207,7 +2207,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                       <div
                         key={ev.id}
                         style={{
-                          background: "#0c1015",
+                          background: "#0D0607",
                           border: "1.5px solid #7A1F2B66",
                           borderRadius: 10,
                           padding: "12px 16px",
