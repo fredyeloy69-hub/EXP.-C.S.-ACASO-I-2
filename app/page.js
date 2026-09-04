@@ -197,8 +197,9 @@ export default function Page() {
     setExportandoArea(areaNombre);
     try {
       const usuarioFirma = usuarioGoogle?.email || usuarioGoogle?.displayName || "Sistema Acocollo I-2";
-      const listaFiltrada = filtrarCarpetasParaExportar(carpetasDelArea, tipoForzado);
-      generarReportePorArea(areaNombre, listaFiltrada, { usuarioFirma });
+      const filtroUsado = tipoForzado || tipoExportacion;
+      const listaFiltrada = filtrarCarpetasParaExportar(carpetasDelArea, filtroUsado);
+      generarReportePorArea(areaNombre, listaFiltrada, { usuarioFirma, tipoFiltro: filtroUsado });
     } finally {
       setExportandoArea(null);
     }
@@ -208,8 +209,9 @@ export default function Page() {
     setExportandoGlobal(true);
     try {
       const usuarioFirma = usuarioGoogle?.email || usuarioGoogle?.displayName || "Sistema Acocollo I-2";
-      const listaFiltrada = filtrarCarpetasParaExportar(carpetas, tipoForzado);
-      generarReporteConsolidadoGlobal(listaFiltrada, { usuarioFirma });
+      const filtroUsado = tipoForzado || tipoExportacion;
+      const listaFiltrada = filtrarCarpetasParaExportar(carpetas, filtroUsado);
+      generarReporteConsolidadoGlobal(listaFiltrada, { usuarioFirma, tipoFiltro: filtroUsado });
     } catch (err) {
       alert(`No se pudo generar el reporte consolidado: ${err.message}`);
     } finally {
@@ -223,9 +225,10 @@ export default function Page() {
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error("Tiempo de espera agotado al generar el Excel")), 10000)
       );
-      const listaFiltrada = filtrarCarpetasParaExportar(carpetasDelArea, tipoForzado);
+      const filtroUsado = tipoForzado || tipoExportacion;
+      const listaFiltrada = filtrarCarpetasParaExportar(carpetasDelArea, filtroUsado);
       await Promise.race([
-        generarReporteExcelPorArea(areaNombre, listaFiltrada),
+        generarReporteExcelPorArea(areaNombre, listaFiltrada, filtroUsado),
         timeoutPromise,
       ]);
     } catch (err) {
