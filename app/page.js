@@ -1930,6 +1930,8 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
         borderRadius: 12,
         padding: grande ? "28px 32px" : "16px 18px",
         boxShadow: "0 4px 20px rgba(0,0,0,.5)",
+        minWidth: 0,
+        overflow: "hidden",
       }}
     >
       <div style={{ fontSize: grande ? 20 : 15, fontWeight: 700, color: "#F2ECE9", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
