@@ -137,6 +137,7 @@ export default function Page() {
   const [colapsoListo, setColapsoListo] = useState(false);
   const [exportandoArea, setExportandoArea] = useState(null);
   const [exportandoExcelArea, setExportandoExcelArea] = useState(null);
+  const [exportandoListaArea, setExportandoListaArea] = useState(null);
   const [menuSeparadoresAbierto, setMenuSeparadoresAbierto] = useState(false);
   const [exportandoSeparadores, setExportandoSeparadores] = useState(null);
   const [exportandoGlobal, setExportandoGlobal] = useState(false);
@@ -255,6 +256,25 @@ export default function Page() {
       alert(`No se pudo generar la lista de separadores: ${err.message}`);
     } finally {
       setExportandoSeparadores(null);
+    }
+  }
+
+  // Mismo Excel de separadores, pero como botón directo por área (junto a
+  // PDF/Excel), en vez del menú desplegable global.
+  async function handleExportarListaArea(areaNombre, carpetasDelArea) {
+    setExportandoListaArea(areaNombre);
+    try {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tiempo de espera agotado al generar el Excel")), 10000)
+      );
+      await Promise.race([
+        generarListaSeparadoresExcel(areaNombre, carpetasDelArea),
+        timeoutPromise,
+      ]);
+    } catch (err) {
+      alert(`No se pudo generar la Lista General: ${err.message}`);
+    } finally {
+      setExportandoListaArea(null);
     }
   }
 
@@ -1107,7 +1127,7 @@ export default function Page() {
                     style={{
                       fontSize: 13,
                       padding: "8px 16px",
-                      borderRadius: "0 20px 20px 0",
+                      borderRadius: 0,
                       border: "1.5px solid #D2691E",
                       borderLeft: "none",
                       background: "#16281D",
@@ -1118,6 +1138,24 @@ export default function Page() {
                     title={`Exportar reporte Excel de ${a}`}
                   >
                     📊 {exportandoExcelArea === a ? "Generando..." : "Excel"}
+                  </button>
+                  <button
+                    onClick={() => handleExportarListaArea(a, carpetasPorArea[a] || [])}
+                    disabled={exportandoListaArea === a}
+                    style={{
+                      fontSize: 13,
+                      padding: "8px 16px",
+                      borderRadius: "0 20px 20px 0",
+                      border: "1.5px solid #D2691E",
+                      borderLeft: "none",
+                      background: "#16281D",
+                      color: exportandoListaArea === a ? "#D9C4C8" : "#D4A017",
+                      fontWeight: 600,
+                      cursor: exportandoListaArea === a ? "not-allowed" : "pointer",
+                    }}
+                    title={`Exportar Lista General de ${a}`}
+                  >
+                    📑 {exportandoListaArea === a ? "Generando..." : "Exportar Lista General"}
                   </button>
                 </div>
               ))}
@@ -1930,8 +1968,6 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
         borderRadius: 12,
         padding: grande ? "28px 32px" : "16px 18px",
         boxShadow: "0 4px 20px rgba(0,0,0,.5)",
-        minWidth: 0,
-        overflow: "hidden",
       }}
     >
       <div style={{ fontSize: grande ? 20 : 15, fontWeight: 700, color: "#F2ECE9", marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
