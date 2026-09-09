@@ -143,6 +143,8 @@ export default function Page() {
   const [exportandoListaGeneral, setExportandoListaGeneral] = useState(null);
   const [exportandoGlobal, setExportandoGlobal] = useState(false);
   const [modoPresentacion, setModoPresentacion] = useState(false);
+  const [slidePresentacion, setSlidePresentacion] = useState(0);
+  const [carruselPausado, setCarruselPausado] = useState(false);
   const [historial, setHistorial] = useState([]);
   const [actividadPorDia, setActividadPorDia] = useState({});
   const [marcandoId, setMarcandoId] = useState(null);
@@ -373,9 +375,69 @@ export default function Page() {
     };
   }, []);
 
+  const SLIDES_PRESENTACION = ["resumen", "especialidades", "tendencia"];
+
+  useEffect(() => {
+    if (!modoPresentacion || carruselPausado) return;
+    const intervalo = setInterval(() => {
+      setSlidePresentacion((s) => (s + 1) % SLIDES_PRESENTACION.length);
+    }, 15000);
+    return () => clearInterval(intervalo);
+  }, [modoPresentacion, carruselPausado]);
+
+  useEffect(() => {
+    if (!modoPresentacion) setSlidePresentacion(0);
+  }, [modoPresentacion]);
+
+  useEffect(() => {
+    function alCambiarFullscreen() {
+      if (!document.fullscreenElement) setModoPresentacion(false);
+    }
+    document.addEventListener("fullscreenchange", alCambiarFullscreen);
+    return () => document.removeEventListener("fullscreenchange", alCambiarFullscreen);
+  }, []);
+
+  useEffect(() => {
+    if (!modoPresentacion) return;
+    function alPresionarTecla(e) {
+      if (e.code === "Space" || e.code === "ArrowRight") {
+        e.preventDefault();
+        setSlidePresentacion((s) => (s + 1) % SLIDES_PRESENTACION.length);
+      } else if (e.code === "ArrowLeft") {
+        e.preventDefault();
+        setSlidePresentacion((s) => (s - 1 + SLIDES_PRESENTACION.length) % SLIDES_PRESENTACION.length);
+      }
+    }
+    window.addEventListener("keydown", alPresionarTecla);
+    return () => window.removeEventListener("keydown", alPresionarTecla);
+  }, [modoPresentacion]);
+
   const pct = resumen && resumen.totalFinales
     ? Math.round((resumen.completas / resumen.totalFinales) * 100)
     : 0;
+
+  const deltaPct =
+    historial.length >= 2 ? pct - historial[historial.length - 2].pct : null;
+
+  const proyeccion = (() => {
+    const DIAS_VENTANA = 14;
+    if (historial.length < 2) return null;
+    const base = historial[Math.max(0, historial.length - 1 - DIAS_VENTANA)];
+    const actual = historial[historial.length - 1];
+    const diasTranscurridos =
+      (new Date(actual.fecha) - new Date(base.fecha)) / (1000 * 60 * 60 * 24);
+    if (diasTranscurridos < 1) return null;
+    const ritmoDiario = (actual.pct - base.pct) / diasTranscurridos;
+    if (ritmoDiario <= 0.05) return { ritmoDiario, fecha: null };
+    const diasRestantes = Math.ceil((100 - actual.pct) / ritmoDiario);
+    const fechaProyectada = new Date(actual.fecha);
+    fechaProyectada.setDate(fechaProyectada.getDate() + diasRestantes);
+    return { ritmoDiario, fecha: fechaProyectada, diasRestantes };
+  })();
+
+  // Hook de conteo animado para el % del hero — debe llamarse siempre, sin
+  // condicionales, aunque el hero solo se muestre en el slide 0.
+  const pctArchivosAnimado = useCountUp(resumen?.pctArchivos ?? 0);
 
   const areas = Array.from(new Set(carpetas.map((c) => c.area || "Sin área"))).sort();
 
@@ -584,6 +646,52 @@ export default function Page() {
           from { opacity: 0; transform: translate(-50%, 20px); }
           to   { opacity: 1; transform: translate(-50%, 0); }
         }
+        .acocollo-hero-pulso {
+          animation: acocolloHeroPulso 2.6s ease-in-out infinite;
+        }
+        @keyframes acocolloHeroPulso {
+          0%, 100% { text-shadow: 0 0 40px rgba(168,61,116,.65); }
+          50%      { text-shadow: 0 0 70px rgba(168,61,116,1), 0 0 110px rgba(168,61,116,.5); }
+        }
+        .acocollo-anillo-hero {
+          position: absolute;
+          inset: 0;
+          margin: auto;
+          border-radius: 50%;
+          border: 1.5px solid #A83D7455;
+          animation: acocolloAnilloExpande 3.2s ease-out infinite;
+          pointer-events: none;
+        }
+        @keyframes acocolloAnilloExpande {
+          0%   { width: 60px; height: 60px; opacity: .9; }
+          100% { width: 420px; height: 420px; opacity: 0; }
+        }
+        .acocollo-barra-brillo {
+          position: relative;
+          overflow: hidden;
+        }
+        .acocollo-barra-brillo::after {
+          content: "";
+          position: absolute;
+          top: 0; bottom: 0; left: -60%;
+          width: 45%;
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+          animation: acocolloBrilloBarra 2.6s ease-in-out infinite;
+        }
+        @keyframes acocolloBrilloBarra {
+          0%   { left: -60%; }
+          100% { left: 130%; }
+        }
+        .acocollo-ranking-item {
+          animation: acocolloTarjetaEntrada .5s cubic-bezier(.25,.9,.35,1.25) both;
+        }
+        .acocollo-tarjeta-respira {
+          animation: acocolloTarjetaEntrada .5s cubic-bezier(.25,.9,.35,1.25) both, acocolloRespira 3.4s ease-in-out infinite .5s;
+        }
+        @keyframes acocolloRespira {
+          0%, 100% { box-shadow: 0 0 22px var(--glow, rgba(168,61,116,.3)); }
+          50%      { box-shadow: 0 0 40px var(--glow, rgba(168,61,116,.55)); }
+        }
       `}</style>
 
       <div className="acocollo-header-sticky">
@@ -614,7 +722,7 @@ export default function Page() {
                 Estado en tiempo real de la carga de documentación
               </p>
               <p style={{ color: "#D9C4C8", marginTop: 0, marginBottom: 4, fontSize: modoPresentacion ? 12.5 : 10.5, maxWidth: 720, lineHeight: 1.35 }}>
-                "MEJORAMIENTO DEL SERVICIO DE ATENCION DE SALUD BASICOS EN ACOCOLLO DISTRITO DE HUANCANE DE LA PROVINCIA DE HUANCANE DEL DEPARTAMENTO DE PUNO"
+                "MEJORAMIENTO DEL SERVICIO DE ATENCION DE SALUD BASICOS EN ACASO DISTRITO DE HUANCANE DE LA PROVINCIA DE HUANCANE DEL DEPARTAMENTO DE PUNO"
               </p>
               {resumen?.ultimaSync?.toDate && (
                 <p style={{ color: "#A83D74", fontSize: 11, marginTop: 0, fontWeight: 700 }}>
@@ -818,7 +926,17 @@ export default function Page() {
             </div>
 
             <button
-              onClick={() => setModoPresentacion((v) => !v)}
+              onClick={() => {
+                const entrando = !modoPresentacion;
+                setModoPresentacion(entrando);
+                try {
+                  if (entrando && document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                  } else if (!entrando && document.fullscreenElement && document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                  }
+                } catch {}
+              }}
               style={{
                 fontSize: 14,
                 fontWeight: 700,
@@ -872,8 +990,108 @@ export default function Page() {
         </div>
       </div>
 
-      <div style={{ maxWidth: modoPresentacion ? "100%" : 1500, margin: "0 auto", padding: modoPresentacion ? "24px 48px 36px" : "24px 28px 32px", color: "#F2ECE9" }}>
+      <div
+        style={{
+          maxWidth: modoPresentacion ? "100%" : 1500,
+          margin: "0 auto",
+          padding: modoPresentacion ? "6px 48px 20px" : "24px 28px 32px",
+          color: "#F2ECE9",
+          ...(modoPresentacion
+            ? { minHeight: "calc(100vh - 165px)", display: "flex", flexDirection: "column", justifyContent: "center" }
+            : {}),
+        }}
+      >
 
+        {/* Hero de modo presentación: número gigante + contexto (delta y proyección) */}
+        {modoPresentacion && slidePresentacion === 0 && (
+          <div
+            className="acocollo-fade-in"
+            style={{
+              textAlign: "center",
+              marginBottom: 36,
+              padding: "4px 10px 4px",
+            }}
+          >
+            <div style={{ fontSize: 17, fontWeight: 700, color: "#D9C4C8", letterSpacing: 3, textTransform: "uppercase", marginBottom: 6 }}>
+              Avance por archivos
+            </div>
+            <div style={{ position: "relative", display: "inline-block" }}>
+              <div className="acocollo-anillo-hero" style={{ animationDelay: "0s" }} />
+              <div className="acocollo-anillo-hero" style={{ animationDelay: "1.6s" }} />
+              <div
+                className="acocollo-hero-pulso"
+                style={{
+                  position: "relative",
+                  fontSize: "clamp(90px, 15vw, 190px)",
+                  fontWeight: 900,
+                  lineHeight: 1,
+                  color: "#A83D74",
+                }}
+              >
+                {pctArchivosAnimado}%
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: 16,
+                justifyContent: "center",
+                flexWrap: "wrap",
+                marginTop: 20,
+              }}
+            >
+              {deltaPct !== null && (
+                <span
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 700,
+                    padding: "10px 20px",
+                    borderRadius: 24,
+                    background: deltaPct > 0 ? "#2ECC7125" : deltaPct < 0 ? "#c0392b25" : "#16281D",
+                    color: deltaPct > 0 ? "#2ECC71" : deltaPct < 0 ? "#e57373" : "#D9C4C8",
+                    border: `1.5px solid ${deltaPct > 0 ? "#2ECC7166" : deltaPct < 0 ? "#c0392b66" : "#A83D7466"}`,
+                  }}
+                >
+                  {deltaPct > 0 ? "↑" : deltaPct < 0 ? "↓" : "→"} {Math.abs(deltaPct)}% desde la última sincronización
+                </span>
+              )}
+              {proyeccion?.fecha && (
+                <span
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 700,
+                    padding: "10px 20px",
+                    borderRadius: 24,
+                    background: "#16281D",
+                    color: "#F2ECE9",
+                    border: "1.5px solid #D2691E88",
+                  }}
+                >
+                  📅 A este ritmo, termina el{" "}
+                  {proyeccion.fecha.toLocaleDateString("es-PE", { day: "2-digit", month: "long", year: "numeric" })}
+                </span>
+              )}
+              {proyeccion && !proyeccion.fecha && (
+                <span
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 700,
+                    padding: "10px 20px",
+                    borderRadius: 24,
+                    background: "#16281D",
+                    color: "#D9C4C8",
+                    border: "1.5px solid #c0392b66",
+                  }}
+                >
+                  ⚠ Ritmo estancado en los últimos días
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {(!modoPresentacion || slidePresentacion === 0) && (
+        <>
         {/* Barra de progreso */}
         <div
           style={{
@@ -970,7 +1188,67 @@ export default function Page() {
           <Card label="Incompletas" value={resumen?.incompletas ?? "–"} color="#e67e22" grande={modoPresentacion} />
           <Card label="Vacías" value={resumen?.vacias ?? "–"} color="#c0392b" grande={modoPresentacion} />
         </div>
+        </>
+        )}
 
+        {/* Ranking por área — reemplaza los círculos en modo presentación: de
+            un vistazo se ve cuál área va más atrasada, sin comparar círculo
+            por círculo. */}
+        {modoPresentacion && slidePresentacion === 0 && areas.length > 0 && (
+          <div className="acocollo-fade-in" style={{ marginBottom: 32, maxWidth: 1100, marginLeft: "auto", marginRight: "auto", width: "100%" }}>
+            <div style={{ fontSize: 19, fontWeight: 700, color: "#F2ECE9", marginBottom: 22 }}>
+              <span style={{ color: "#A83D74" }}>»» </span>RANKING DE AVANCE POR ÁREA
+            </div>
+            {areas
+              .map((a) => {
+                const stats = areaStats[a] || { total: 0, completas: 0, incompletas: 0, vacias: 0, archivosNecesarios: 0, archivosCompletados: 0 };
+                const pctArea =
+                  stats.archivosNecesarios > 0
+                    ? Math.round((stats.archivosCompletados / stats.archivosNecesarios) * 100)
+                    : 0;
+                return { a, stats, pctArea };
+              })
+              .sort((x, y) => y.pctArea - x.pctArea)
+              .map(({ a, stats, pctArea }, i) => (
+                <div
+                  key={a}
+                  className="acocollo-ranking-item"
+                  style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 22, animationDelay: `${i * 90}ms` }}
+                >
+                  <div style={{ width: 34, fontSize: 22, fontWeight: 800, color: "#D9C4C8", textAlign: "center", flexShrink: 0 }}>
+                    {i + 1}
+                  </div>
+                  <div style={{ width: 250, fontSize: 19, fontWeight: 700, color: "#F2ECE9", flexShrink: 0 }}>
+                    {a}
+                    <div style={{ fontSize: 13, color: "#D9C4C8", fontWeight: 400 }}>
+                      {stats.total} carpetas · {stats.incompletas} inc. · {stats.vacias} vacías
+                    </div>
+                  </div>
+                  <div
+                    className="acocollo-barra-brillo"
+                    style={{ flex: 1, height: 48, background: "#0D1F15", borderRadius: 24, boxShadow: "inset 0 2px 6px rgba(0,0,0,.6)" }}
+                  >
+                    <div
+                      style={{
+                        width: `${pctArea}%`,
+                        height: "100%",
+                        background: `linear-gradient(90deg, ${colorForArea(a)}, ${colorForArea(a)}cc)`,
+                        transition: "width 1s cubic-bezier(.16,1,.3,1)",
+                        boxShadow: `0 0 20px ${colorForArea(a)}bb`,
+                        borderRadius: 24,
+                      }}
+                    />
+                  </div>
+                  <div style={{ width: 80, fontSize: 26, fontWeight: 800, color: colorForArea(a), textAlign: "right", flexShrink: 0 }}>
+                    <AnimatedPercent value={pctArea} />
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {(!modoPresentacion || slidePresentacion === 2) && (
+        <>
         {/* Selector de Rango de Fechas para Actividad/Heatmap */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
           <div style={{ fontSize: 15, fontWeight: 700, color: "#F2ECE9" }}>
@@ -1003,48 +1281,15 @@ export default function Page() {
         </div>
 
         {/* Sección de Tendencia de avance y Actividad */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 16, marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: modoPresentacion ? 24 : 16, marginBottom: 32, alignItems: "stretch" }}>
           <TendenciaChart historial={historial} grande={modoPresentacion} actividadPorDia={actividadPorDia} />
           <ActividadHeatmap actividadPorDia={actividadPorDia} diasCustom={rangoDiasHeatmap} grande={modoPresentacion} onMarcarCompleta={handleMarcarCompleta} marcandoId={marcandoId} />
         </div>
-
-        {modoPresentacion && (
-          <div
-            className="acocollo-fade-in acocollo-modo-transicion"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: 28,
-              justifyItems: "center",
-              marginTop: 8,
-            }}
-          >
-            {areas.map((a) => {
-              const stats = areaStats[a] || { total: 0, completas: 0, incompletas: 0, vacias: 0, archivosNecesarios: 0, archivosCompletados: 0 };
-              const pctArea =
-                stats.archivosNecesarios > 0
-                  ? Math.round((stats.archivosCompletados / stats.archivosNecesarios) * 100)
-                  : 0;
-              return (
-                <AreaMiniCard
-                  key={a}
-                  area={a}
-                  pct={pctArea}
-                  total={stats.total}
-                  incompletas={stats.incompletas}
-                  vacias={stats.vacias}
-                  color={colorForArea(a)}
-                  active={false}
-                  onClick={() => {}}
-                  tamano={280}
-                />
-              );
-            })}
-          </div>
+        </>
         )}
 
-        {modoPresentacion && areas.length > 0 && (
-          <div className="acocollo-fade-in acocollo-modo-transicion" style={{ marginTop: 36 }}>
+        {modoPresentacion && slidePresentacion === 1 && areas.length > 0 && (
+          <div className="acocollo-fade-in acocollo-modo-transicion" style={{ marginTop: 8 }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#F2ECE9", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ color: "#A83D74" }}>»» </span>AVANCE POR ESPECIALIDAD, POR ÁREA
             </div>
@@ -1088,8 +1333,8 @@ export default function Page() {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                      gap: 18,
+                      gridTemplateColumns: `repeat(auto-fit, minmax(${modoPresentacion ? 230 : 200}px, 1fr))`,
+                      gap: modoPresentacion ? 26 : 18,
                     }}
                   >
                     {nombresOrdenados.map((esp, i) => {
@@ -1103,7 +1348,8 @@ export default function Page() {
                           total={s.total}
                           incompletas={s.incompletas}
                           vacias={s.vacias}
-                          delay={i * 30}
+                          delay={i * (modoPresentacion ? 60 : 30)}
+                          grande={modoPresentacion}
                         />
                       );
                     })}
@@ -1111,6 +1357,78 @@ export default function Page() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {modoPresentacion && (
+          <div
+            onMouseEnter={() => setCarruselPausado(true)}
+            onMouseLeave={() => setCarruselPausado(false)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 18,
+              marginTop: 36,
+              padding: "14px 0",
+            }}
+          >
+            <button
+              onClick={() =>
+                setSlidePresentacion((s) => (s - 1 + SLIDES_PRESENTACION.length) % SLIDES_PRESENTACION.length)
+              }
+              style={{
+                fontSize: 20,
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                border: "1.5px solid #D2691E88",
+                background: "#16281D",
+                color: "#F2ECE9",
+                cursor: "pointer",
+              }}
+              title="Sección anterior"
+            >
+              ‹
+            </button>
+            <div style={{ display: "flex", gap: 10 }}>
+              {SLIDES_PRESENTACION.map((s, i) => (
+                <button
+                  key={s}
+                  onClick={() => setSlidePresentacion(i)}
+                  title={{ resumen: "Resumen", especialidades: "Por especialidad", tendencia: "Tendencia y actividad" }[s]}
+                  style={{
+                    width: slidePresentacion === i ? 34 : 12,
+                    height: 12,
+                    borderRadius: 6,
+                    border: "none",
+                    background: slidePresentacion === i ? "#A83D74" : "#D9C4C866",
+                    cursor: "pointer",
+                    transition: "all .25s ease",
+                    padding: 0,
+                  }}
+                />
+              ))}
+            </div>
+            <button
+              onClick={() => setSlidePresentacion((s) => (s + 1) % SLIDES_PRESENTACION.length)}
+              style={{
+                fontSize: 20,
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                border: "1.5px solid #D2691E88",
+                background: "#16281D",
+                color: "#F2ECE9",
+                cursor: "pointer",
+              }}
+              title="Siguiente sección"
+            >
+              ›
+            </button>
+            {carruselPausado && (
+              <span style={{ fontSize: 11, color: "#D9C4C8", marginLeft: 6 }}>⏸ en pausa</span>
+            )}
           </div>
         )}
 
@@ -1771,13 +2089,19 @@ function RutaJerarquica({ ruta, nombre, skipLevels = 0 }) {
   );
 }
 
-function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0, delay }) {
-  const size = 110;
-  const stroke = 8;
+function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0, delay, grande }) {
+  const size = grande ? 150 : 110;
+  const stroke = grande ? 11 : 8;
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (pct / 100) * circumference;
   const color = pct >= 100 ? "#A83D74" : pct >= 50 ? "#e67e22" : "#c0392b";
+
+  const [avanzado, setAvanzado] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setAvanzado(true), 80 + (delay || 0));
+    return () => clearTimeout(t);
+  }, [delay]);
+  const offset = circumference - ((avanzado ? pct : 0) / 100) * circumference;
 
   return (
     <div
@@ -1786,8 +2110,8 @@ function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0,
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 8,
-        padding: "18px 12px",
+        gap: grande ? 12 : 8,
+        padding: grande ? "26px 18px" : "18px 12px",
         borderRadius: 12,
         background: "#16281D",
         border: "1.5px solid #A83D7466",
@@ -1807,17 +2131,18 @@ function EspecialidadMiniCard({ nombre, pct, total, incompletas = 0, vacias = 0,
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.16,1,.3,1)", filter: `drop-shadow(0 0 6px ${color}aa)` }}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
-        <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fontSize="20" fontWeight="800" fill="#F2ECE9">
+        <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fontSize={grande ? 28 : 20} fontWeight="800" fill="#F2ECE9">
           {pct}%
         </text>
       </svg>
-      <div style={{ fontSize: 13, fontWeight: 700, color: "#F2ECE9", textAlign: "center", lineHeight: 1.3, maxWidth: 150 }}>
+      <div style={{ fontSize: grande ? 16 : 13, fontWeight: 700, color: "#F2ECE9", textAlign: "center", lineHeight: 1.3, maxWidth: grande ? 190 : 150 }}>
         {nombre}
       </div>
-      <div style={{ fontSize: 12, color: "#D9C4C8", fontWeight: 700 }}>{total} carpetas</div>
-      <div style={{ fontSize: 13, textAlign: "center", display: "flex", gap: 10, marginTop: 4 }}>
+      <div style={{ fontSize: grande ? 14 : 12, color: "#D9C4C8", fontWeight: 700 }}>{total} carpetas</div>
+      <div style={{ fontSize: grande ? 14 : 13, textAlign: "center", display: "flex", gap: 10, marginTop: 4 }}>
         <span style={{ color: "#e67e22", fontWeight: 700 }}>{incompletas} inc.</span>
         <span style={{ color: "#c0392b", fontWeight: 700 }}>{vacias} vacías</span>
       </div>
@@ -1985,11 +2310,19 @@ function useCountUp(target) {
   return display;
 }
 
+// Envuelve useCountUp en un componente propio para poder usarlo dentro de
+// un .map() (llamar hooks dentro de un loop directamente rompe las reglas
+// de React; como componente aparte, cada instancia tiene su propio hook).
+function AnimatedPercent({ value }) {
+  const animado = useCountUp(value);
+  return <>{animado}%</>;
+}
+
 function Card({ label, value, color, grande }) {
   const valorAnimado = useCountUp(value);
   return (
     <div
-      className="acocollo-tarjeta-viva"
+      className={grande ? "acocollo-tarjeta-viva acocollo-tarjeta-respira" : "acocollo-tarjeta-viva"}
       style={{
         background: "#16281D",
         borderRadius: 12,
@@ -1997,23 +2330,24 @@ function Card({ label, value, color, grande }) {
         border: `1.5px solid ${color}55`,
         borderTop: `4px solid ${color}`,
         boxShadow: `0 0 22px ${color}33`,
+        ...(grande ? { "--glow": `${color}55` } : {}),
       }}
     >
-      <div style={{ fontSize: grande ? 44 : 28, fontWeight: 700, color: "#F2ECE9", textShadow: `0 0 14px ${color}66` }}>{valorAnimado}</div>
-      <div style={{ fontSize: grande ? 15 : 12, color: "#D9C4C8", letterSpacing: 0.3 }}>{label}</div>
+      <div style={{ fontSize: grande ? 52 : 28, fontWeight: 700, color: "#F2ECE9", textShadow: `0 0 14px ${color}66` }}>{valorAnimado}</div>
+      <div style={{ fontSize: grande ? 16 : 12, color: "#D9C4C8", letterSpacing: 0.3 }}>{label}</div>
     </div>
   );
 }
 
 function TendenciaChart({ historial, grande, actividadPorDia }) {
-  const altoLinea = grande ? 420 : 280;
-  const altoBarras = grande ? 100 : 70;
+  const altoLinea = grande ? 540 : 280;
+  const altoBarras = grande ? 130 : 70;
   const alto = altoLinea + altoBarras;
   
-  const anchoPunto = grande ? 65 : 55;
+  const anchoPunto = grande ? 80 : 55;
   const paddingIzq = 60;
   const paddingDer = 40;
-  const anchoMinimo = grande ? 960 : 720;
+  const anchoMinimo = grande ? 1100 : 720;
   const ancho = Math.max(anchoMinimo, paddingIzq + paddingDer + historial.length * anchoPunto);
   const paddingArriba = 24;
 
@@ -2192,8 +2526,8 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
     semanas.push(dias.slice(i, i + 7));
   }
 
-  const celda = grande ? 30 : 17;
-  const gap = grande ? 7 : 4;
+  const celda = grande ? 40 : 17;
+  const gap = grande ? 10 : 4;
   const tiposOrdenados = Object.keys(conteoPorTipoTotal).sort((a, b) => conteoPorTipoTotal[b] - conteoPorTipoTotal[a]);
 
   async function abrirDetalleDia(d) {
