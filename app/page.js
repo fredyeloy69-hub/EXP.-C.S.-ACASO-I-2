@@ -700,6 +700,23 @@ export default function Page() {
           0%   { r: 5.5; opacity: .9; }
           100% { r: 18; opacity: 0; }
         }
+        .acocollo-comet-ring {
+          animation: acocolloCometRing 2.6s ease-in-out infinite;
+        }
+        @keyframes acocolloCometRing {
+          0%   { stroke-dashoffset: var(--circ); opacity: 0; }
+          8%   { opacity: 1; }
+          50%  { stroke-dashoffset: calc(var(--circ) - var(--arc)); opacity: 1; }
+          92%  { opacity: 1; }
+          100% { stroke-dashoffset: var(--circ); opacity: 0; }
+        }
+        .acocollo-linea-flujo {
+          animation: acocolloLineaFlujo 1.6s linear infinite;
+        }
+        @keyframes acocolloLineaFlujo {
+          from { stroke-dashoffset: 0; }
+          to   { stroke-dashoffset: -28; }
+        }
       `}</style>
 
       <div className="acocollo-header-sticky">
@@ -2210,6 +2227,25 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
           style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.16,1,.3,1)", filter: `drop-shadow(0 0 5px ${color}99)` }}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
+        {avanzado && pct > 0 && (
+          <circle
+            className="acocollo-comet-ring"
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth={Math.max(2, stroke * 0.35)}
+            strokeLinecap="round"
+            strokeDasharray={`${Math.max(6, circumference * 0.035)} ${circumference}`}
+            style={{
+              "--circ": circumference,
+              "--arc": (pct / 100) * circumference,
+              filter: `drop-shadow(0 0 4px #ffffff)`,
+            }}
+            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          />
+        )}
         <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fontSize={fontPct} fontWeight="700" fill="#F2ECE9">
           <AnimatedPercent value={pct} />
         </text>
@@ -2373,9 +2409,14 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
   // las barritas de incidencias crecen desde abajo — todo arranca apenas se
   // monta el gráfico, no es un dibujo estático.
   const [avanzado, setAvanzado] = useState(false);
+  const [fluyendo, setFluyendo] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setAvanzado(true), 120);
-    return () => clearTimeout(t);
+    const t1 = setTimeout(() => setAvanzado(true), 120);
+    const t2 = setTimeout(() => setFluyendo(true), 1600);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
   }, []);
 
   return (
@@ -2451,6 +2492,19 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                   strokeDashoffset={avanzado ? 0 : 1}
                   style={{ transition: "stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1)", filter: "drop-shadow(0 0 6px rgba(168,61,116,.6))" }}
                 />
+                {fluyendo && (
+                  <path
+                    className="acocollo-linea-flujo"
+                    d={pathLinea}
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth={grande ? "2.5" : "2"}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeDasharray="3 11"
+                    opacity="0.85"
+                  />
+                )}
                 {puntos.map((p, i) => {
                   const esUltimo = i === puntos.length - 1;
                   return (
