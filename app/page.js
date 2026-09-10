@@ -701,21 +701,12 @@ export default function Page() {
           100% { r: 18; opacity: 0; }
         }
         .acocollo-comet-ring {
-          animation: acocolloCometRing 2.6s ease-in-out infinite;
+          animation: acocolloCometRing 2.8s linear infinite;
         }
         @keyframes acocolloCometRing {
-          0%   { stroke-dashoffset: var(--circ); opacity: 0; }
-          8%   { opacity: 1; }
-          50%  { stroke-dashoffset: calc(var(--circ) - var(--arc)); opacity: 1; }
-          92%  { opacity: 1; }
-          100% { stroke-dashoffset: var(--circ); opacity: 0; }
-        }
-        .acocollo-linea-flujo {
-          animation: acocolloLineaFlujo 1.6s linear infinite;
-        }
-        @keyframes acocolloLineaFlujo {
-          from { stroke-dashoffset: 0; }
-          to   { stroke-dashoffset: -28; }
+          0%   { stroke-dashoffset: var(--circ); }
+          50%  { stroke-dashoffset: calc(var(--circ) - var(--arc)); }
+          100% { stroke-dashoffset: var(--circ); }
         }
       `}</style>
 
@@ -2234,14 +2225,14 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
             cy={size / 2}
             r={radius}
             fill="none"
-            stroke="#ffffff"
-            strokeWidth={Math.max(2, stroke * 0.35)}
+            stroke="#e5b80b"
+            strokeWidth={Math.max(3, stroke * 0.55)}
             strokeLinecap="round"
-            strokeDasharray={`${Math.max(6, circumference * 0.035)} ${circumference}`}
+            strokeDasharray={`${Math.max(10, circumference * 0.06)} ${circumference}`}
             style={{
               "--circ": circumference,
               "--arc": (pct / 100) * circumference,
-              filter: `drop-shadow(0 0 4px #ffffff)`,
+              filter: `drop-shadow(0 0 5px #e5b80b)`,
             }}
             transform={`rotate(-90 ${size / 2} ${size / 2})`}
           />
@@ -2494,15 +2485,12 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                 />
                 {fluyendo && (
                   <path
-                    className="acocollo-linea-flujo"
                     d={pathLinea}
                     fill="none"
-                    stroke="#ffffff"
-                    strokeWidth={grande ? "2.5" : "2"}
+                    stroke="url(#tendenciaFlujoShimmer)"
+                    strokeWidth={grande ? "5.5" : "4.5"}
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeDasharray="3 11"
-                    opacity="0.85"
                   />
                 )}
                 {puntos.map((p, i) => {
@@ -2538,6 +2526,13 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                   <linearGradient id="tendenciaGradientGold" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#A83D74" />
                     <stop offset="100%" stopColor="#16281D" stopOpacity="0" />
+                  </linearGradient>
+                  <linearGradient id="tendenciaFlujoShimmer" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+                    <stop offset="0%" stopColor="#A83D74" stopOpacity="0" />
+                    <stop offset="50%" stopColor="#e5b80b" stopOpacity="0.95">
+                      <animate attributeName="offset" values="-0.35;1.35" dur="2.4s" repeatCount="indefinite" />
+                    </stop>
+                    <stop offset="100%" stopColor="#A83D74" stopOpacity="0" />
                   </linearGradient>
                 </defs>
 
