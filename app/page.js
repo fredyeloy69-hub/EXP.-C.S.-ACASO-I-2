@@ -700,14 +700,6 @@ export default function Page() {
           0%   { r: 5.5; opacity: .9; }
           100% { r: 18; opacity: 0; }
         }
-        .acocollo-comet-ring {
-          animation: acocolloCometRing 2.8s linear infinite;
-        }
-        @keyframes acocolloCometRing {
-          0%   { stroke-dashoffset: var(--circ); }
-          50%  { stroke-dashoffset: calc(var(--circ) - var(--arc)); }
-          100% { stroke-dashoffset: var(--circ); }
-        }
       `}</style>
 
       <div className="acocollo-header-sticky">
@@ -2218,25 +2210,27 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
           style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.16,1,.3,1)", filter: `drop-shadow(0 0 5px ${color}99)` }}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
-        {avanzado && pct > 0 && (
-          <circle
-            className="acocollo-comet-ring"
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke="#e5b80b"
-            strokeWidth={Math.max(3, stroke * 0.55)}
-            strokeLinecap="round"
-            strokeDasharray={`${Math.max(10, circumference * 0.06)} ${circumference}`}
-            style={{
-              "--circ": circumference,
-              "--arc": (pct / 100) * circumference,
-              filter: `drop-shadow(0 0 5px #e5b80b)`,
-            }}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        {/* Arco chiquito que gira sin parar, para dar sensación de "actualizando en vivo" — misma técnica que Chijnaya */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#F2ECE9"
+          strokeWidth={Math.max(2, stroke * 0.28)}
+          strokeLinecap="round"
+          strokeDasharray={`${circumference * 0.09} ${circumference * 0.91}`}
+          opacity="0.75"
+        >
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from={`0 ${size / 2} ${size / 2}`}
+            to={`360 ${size / 2} ${size / 2}`}
+            dur="1.3s"
+            repeatCount="indefinite"
           />
-        )}
+        </circle>
         <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fontSize={fontPct} fontWeight="700" fill="#F2ECE9">
           <AnimatedPercent value={pct} />
         </text>
@@ -2483,16 +2477,6 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                   strokeDashoffset={avanzado ? 0 : 1}
                   style={{ transition: "stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1)", filter: "drop-shadow(0 0 6px rgba(168,61,116,.6))" }}
                 />
-                {fluyendo && (
-                  <path
-                    d={pathLinea}
-                    fill="none"
-                    stroke="url(#tendenciaFlujoShimmer)"
-                    strokeWidth={grande ? "5.5" : "4.5"}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                )}
                 {puntos.map((p, i) => {
                   const esUltimo = i === puntos.length - 1;
                   return (
@@ -2521,18 +2505,17 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                     className="acocollo-punto-pulso"
                   />
                 )}
+                {/* Punto brillante que recorre toda la línea sin parar — misma técnica que Chijnaya */}
+                {fluyendo && (
+                  <circle r={grande ? 5.5 : 4} fill="#F2ECE9" style={{ filter: "drop-shadow(0 0 4px #F2ECE9)" }}>
+                    <animateMotion dur="3.4s" repeatCount="indefinite" path={pathLinea} />
+                  </circle>
+                )}
 
                 <defs>
                   <linearGradient id="tendenciaGradientGold" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#A83D74" />
                     <stop offset="100%" stopColor="#16281D" stopOpacity="0" />
-                  </linearGradient>
-                  <linearGradient id="tendenciaFlujoShimmer" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
-                    <stop offset="0%" stopColor="#A83D74" stopOpacity="0" />
-                    <stop offset="50%" stopColor="#e5b80b" stopOpacity="0.95">
-                      <animate attributeName="offset" values="-0.35;1.35" dur="2.4s" repeatCount="indefinite" />
-                    </stop>
-                    <stop offset="100%" stopColor="#A83D74" stopOpacity="0" />
                   </linearGradient>
                 </defs>
 
