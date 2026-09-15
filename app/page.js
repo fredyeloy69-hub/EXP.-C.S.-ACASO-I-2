@@ -13,7 +13,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { generarReportePorArea, generarReporteConsolidadoGlobal } from "../lib/exportarReporte";
-import { generarReporteExcelPorArea, generarListaSeparadoresExcel, generarListaGeneralExcel } from "../lib/exportarExcel";
+import { generarReporteExcelPorArea, generarListaSeparadoresExcel, generarListaGeneralExcel, generarListaMaterialImpresion } from "../lib/exportarExcel";
 import { LOGO_PUNO_BASE64 } from "../lib/logoPuno";
 import {
   getAuth,
@@ -137,6 +137,7 @@ export default function Page() {
   const [colapsoListo, setColapsoListo] = useState(false);
   const [exportandoArea, setExportandoArea] = useState(null);
   const [exportandoExcelArea, setExportandoExcelArea] = useState(null);
+  const [exportandoMaterial, setExportandoMaterial] = useState(null);
   const [menuSeparadoresAbierto, setMenuSeparadoresAbierto] = useState(false);
   const [exportandoSeparadores, setExportandoSeparadores] = useState(null);
   const [menuListaGeneralAbierto, setMenuListaGeneralAbierto] = useState(false);
@@ -279,6 +280,25 @@ export default function Page() {
       alert(`No se pudo generar la lista general: ${err.message}`);
     } finally {
       setExportandoListaGeneral(null);
+    }
+  }
+
+  // Material de impresión: cuenta hojas A4/A3/A2/A1/A0, siempre con TODAS
+  // las carpetas del área (es un conteo de material, no de avance).
+  async function handleExportarMaterialImpresion(areaNombre, carpetasDelArea) {
+    setExportandoMaterial(areaNombre);
+    try {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tiempo de espera agotado al generar el Excel")), 10000)
+      );
+      await Promise.race([
+        generarListaMaterialImpresion(areaNombre, carpetasDelArea),
+        timeoutPromise,
+      ]);
+    } catch (err) {
+      alert(`No se pudo generar el material de impresión: ${err.message}`);
+    } finally {
+      setExportandoMaterial(null);
     }
   }
 
@@ -1528,7 +1548,7 @@ export default function Page() {
                     style={{
                       fontSize: 13,
                       padding: "8px 16px",
-                      borderRadius: "0 20px 20px 0",
+                      borderRadius: 0,
                       border: "1.5px solid #D2691E",
                       borderLeft: "none",
                       background: "#16281D",
@@ -1539,6 +1559,24 @@ export default function Page() {
                     title={`Exportar reporte Excel de ${a}`}
                   >
                     📊 {exportandoExcelArea === a ? "Generando..." : "Excel"}
+                  </button>
+                  <button
+                    onClick={() => handleExportarMaterialImpresion(a, carpetasPorArea[a] || [])}
+                    disabled={exportandoMaterial === a}
+                    style={{
+                      fontSize: 13,
+                      padding: "8px 16px",
+                      borderRadius: "0 20px 20px 0",
+                      border: "1.5px solid #D2691E",
+                      borderLeft: "none",
+                      background: "#16281D",
+                      color: exportandoMaterial === a ? "#D9C4C8" : "#e5b80b",
+                      fontWeight: 600,
+                      cursor: exportandoMaterial === a ? "not-allowed" : "pointer",
+                    }}
+                    title={`Exportar material de impresión (hojas A4/A3/A2/A1/A0) de ${a}`}
+                  >
+                    🖨️ {exportandoMaterial === a ? "Generando..." : "Material de Impresión"}
                   </button>
                 </div>
               ))}
