@@ -13,7 +13,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { generarReportePorArea, generarReporteConsolidadoGlobal } from "../lib/exportarReporte";
-import { generarReporteExcelPorArea, generarListaSeparadoresExcel, generarListaGeneralExcel } from "../lib/exportarExcel";
+import { generarReporteExcelPorArea, generarListaSeparadoresExcel, generarListaGeneralExcel, generarListaMaterialImpresion } from "../lib/exportarExcel";
 import { LOGO_PUNO_BASE64 } from "../lib/logoPuno";
 import {
   getAuth,
@@ -137,6 +137,7 @@ export default function Page() {
   const [colapsoListo, setColapsoListo] = useState(false);
   const [exportandoArea, setExportandoArea] = useState(null);
   const [exportandoExcelArea, setExportandoExcelArea] = useState(null);
+  const [exportandoMaterial, setExportandoMaterial] = useState(null);
   const [menuSeparadoresAbierto, setMenuSeparadoresAbierto] = useState(false);
   const [exportandoSeparadores, setExportandoSeparadores] = useState(null);
   const [menuListaGeneralAbierto, setMenuListaGeneralAbierto] = useState(false);
@@ -279,6 +280,25 @@ export default function Page() {
       alert(`No se pudo generar la lista general: ${err.message}`);
     } finally {
       setExportandoListaGeneral(null);
+    }
+  }
+
+  // Material de impresión: cuenta hojas A4/A3/A2/A1/A0, siempre con TODAS
+  // las carpetas del área (es un conteo de material, no de avance).
+  async function handleExportarMaterialImpresion(areaNombre, carpetasDelArea) {
+    setExportandoMaterial(areaNombre);
+    try {
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Tiempo de espera agotado al generar el Excel")), 10000)
+      );
+      await Promise.race([
+        generarListaMaterialImpresion(areaNombre, carpetasDelArea),
+        timeoutPromise,
+      ]);
+    } catch (err) {
+      alert(`No se pudo generar el material de impresión: ${err.message}`);
+    } finally {
+      setExportandoMaterial(null);
     }
   }
 
@@ -691,6 +711,14 @@ export default function Page() {
         @keyframes acocolloRespira {
           0%, 100% { box-shadow: 0 0 22px var(--glow, rgba(168,61,116,.3)); }
           50%      { box-shadow: 0 0 40px var(--glow, rgba(168,61,116,.55)); }
+        }
+        .acocollo-punto-pulso {
+          animation: acocolloPuntoPulso 2s ease-out infinite 1.4s;
+          transform-origin: center;
+        }
+        @keyframes acocolloPuntoPulso {
+          0%   { r: 5.5; opacity: .9; }
+          100% { r: 18; opacity: 0; }
         }
       `}</style>
 
@@ -1520,7 +1548,7 @@ export default function Page() {
                     style={{
                       fontSize: 13,
                       padding: "8px 16px",
-                      borderRadius: "0 20px 20px 0",
+                      borderRadius: 0,
                       border: "1.5px solid #D2691E",
                       borderLeft: "none",
                       background: "#16281D",
@@ -1531,6 +1559,24 @@ export default function Page() {
                     title={`Exportar reporte Excel de ${a}`}
                   >
                     📊 {exportandoExcelArea === a ? "Generando..." : "Excel"}
+                  </button>
+                  <button
+                    onClick={() => handleExportarMaterialImpresion(a, carpetasPorArea[a] || [])}
+                    disabled={exportandoMaterial === a}
+                    style={{
+                      fontSize: 13,
+                      padding: "8px 16px",
+                      borderRadius: "0 20px 20px 0",
+                      border: "1.5px solid #D2691E",
+                      borderLeft: "none",
+                      background: "#16281D",
+                      color: exportandoMaterial === a ? "#D9C4C8" : "#e5b80b",
+                      fontWeight: 600,
+                      cursor: exportandoMaterial === a ? "not-allowed" : "pointer",
+                    }}
+                    title={`Exportar material de impresión (hojas A4/A3/A2/A1/A0) de ${a}`}
+                  >
+                    🖨️ {exportandoMaterial === a ? "Generando..." : "Material de Impresión"}
                   </button>
                 </div>
               ))}
@@ -2155,13 +2201,22 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
   const stroke = Math.max(9, Math.round(size * 0.06));
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (pct / 100) * circumference;
   const fontPct = Math.round(size * 0.22);
   const fontLabel = Math.max(14, Math.round(size * 0.09));
   const fontCount = Math.max(12, Math.round(size * 0.07));
 
+  // El anillo arranca en 0% y se llena hasta su valor real apenas se monta,
+  // igual que en modo presentación — para que se note como progreso animado.
+  const [avanzado, setAvanzado] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setAvanzado(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+  const offset = circumference - ((avanzado ? pct : 0) / 100) * circumference;
+
   return (
     <button
+      className="acocollo-tarjeta-viva"
       onClick={onClick}
       style={{
         display: "flex",
@@ -2190,10 +2245,32 @@ function AreaMiniCard({ area, pct, total, incompletas = 0, vacias = 0, color, ac
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
+          style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(.16,1,.3,1)", filter: `drop-shadow(0 0 5px ${color}99)` }}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
+        {/* Arco chiquito que gira sin parar, para dar sensación de "actualizando en vivo" — misma técnica que Chijnaya */}
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          stroke="#F2ECE9"
+          strokeWidth={Math.max(2, stroke * 0.28)}
+          strokeLinecap="round"
+          strokeDasharray={`${circumference * 0.09} ${circumference * 0.91}`}
+          opacity="0.75"
+        >
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from={`0 ${size / 2} ${size / 2}`}
+            to={`360 ${size / 2} ${size / 2}`}
+            dur="1.3s"
+            repeatCount="indefinite"
+          />
+        </circle>
         <text x="50%" y="50%" textAnchor="middle" dominantBaseline="central" fontSize={fontPct} fontWeight="700" fill="#F2ECE9">
-          {pct}%
+          <AnimatedPercent value={pct} />
         </text>
       </svg>
       <div style={{ fontSize: fontLabel, fontWeight: 700, color: active ? color : "#F2ECE9", textAlign: "center", marginTop: 4 }}>
@@ -2351,6 +2428,20 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
   const ancho = Math.max(anchoMinimo, paddingIzq + paddingDer + historial.length * anchoPunto);
   const paddingArriba = 24;
 
+  // La línea se "dibuja" de izquierda a derecha, el área aparece detrás, y
+  // las barritas de incidencias crecen desde abajo — todo arranca apenas se
+  // monta el gráfico, no es un dibujo estático.
+  const [avanzado, setAvanzado] = useState(false);
+  const [fluyendo, setFluyendo] = useState(false);
+  useEffect(() => {
+    const t1 = setTimeout(() => setAvanzado(true), 120);
+    const t2 = setTimeout(() => setFluyendo(true), 1600);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
   return (
     <div
       style={{
@@ -2406,7 +2497,12 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                   );
                 })}
 
-                <path d={pathArea} fill="url(#tendenciaGradientGold)" opacity="0.45" />
+                <path
+                  d={pathArea}
+                  fill="url(#tendenciaGradientGold)"
+                  opacity={avanzado ? 0.45 : 0}
+                  style={{ transition: "opacity 1.1s ease .3s" }}
+                />
                 <path
                   d={pathLinea}
                   fill="none"
@@ -2414,10 +2510,45 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                   strokeWidth={grande ? "4.5" : "3.5"}
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  pathLength="1"
+                  strokeDasharray="1"
+                  strokeDashoffset={avanzado ? 0 : 1}
+                  style={{ transition: "stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1)", filter: "drop-shadow(0 0 6px rgba(168,61,116,.6))" }}
                 />
-                {puntos.map((p, i) => (
-                  <circle key={i} cx={p.x} cy={p.y} r={i === puntos.length - 1 ? (grande ? 7 : 5.5) : (grande ? 5 : 3.5)} fill="#A83D74" />
-                ))}
+                {puntos.map((p, i) => {
+                  const esUltimo = i === puntos.length - 1;
+                  return (
+                    <circle
+                      key={i}
+                      cx={p.x}
+                      cy={p.y}
+                      r={esUltimo ? (grande ? 7 : 5.5) : (grande ? 5 : 3.5)}
+                      fill="#A83D74"
+                      opacity={avanzado ? 1 : 0}
+                      style={{
+                        transition: `opacity .4s ease ${0.15 + i * 0.03}s, r .4s ease`,
+                        filter: esUltimo ? "drop-shadow(0 0 8px #A83D74)" : "none",
+                      }}
+                    />
+                  );
+                })}
+                {avanzado && (
+                  <circle
+                    cx={puntos[puntos.length - 1].x}
+                    cy={puntos[puntos.length - 1].y}
+                    r={grande ? 7 : 5.5}
+                    fill="none"
+                    stroke="#A83D74"
+                    strokeWidth="2"
+                    className="acocollo-punto-pulso"
+                  />
+                )}
+                {/* Punto brillante que recorre toda la línea sin parar — misma técnica que Chijnaya */}
+                {fluyendo && (
+                  <circle r={grande ? 5.5 : 4} fill="#F2ECE9" style={{ filter: "drop-shadow(0 0 4px #F2ECE9)" }}>
+                    <animateMotion dur="3.4s" repeatCount="indefinite" path={pathLinea} />
+                  </circle>
+                )}
 
                 <defs>
                   <linearGradient id="tendenciaGradientGold" x1="0" y1="0" x2="0" y2="1">
@@ -2436,15 +2567,17 @@ function TendenciaChart({ historial, grande, actividadPorDia }) {
                 </text>
                 {puntos.map((p, i) => {
                   const alturaBarrita = Math.max(3, (p.incidencias / maxIncidencias) * (altoBarras - 28));
+                  const alturaMostrada = avanzado ? alturaBarrita : 0;
                   return (
                     <rect
                       key={i}
                       x={p.x - 4}
-                      y={yBaseBarras - alturaBarrita}
+                      y={yBaseBarras - alturaMostrada}
                       width="8"
-                      height={alturaBarrita}
+                      height={alturaMostrada}
                       rx="2"
                       fill={p.incidencias > 0 ? "#A83D74" : "#D2691E66"}
+                      style={{ transition: `height .6s ease ${0.2 + i * 0.02}s, y .6s ease ${0.2 + i * 0.02}s` }}
                     />
                   );
                 })}
