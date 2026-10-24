@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Expediente Técnico — C.S. Accaso",
+  title: "Expediente Técnico — C.S. Accaso I-2",
   description: "Sistema de control de documentación",
 };
 
