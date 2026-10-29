@@ -2477,6 +2477,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
   const [diaSeleccionado, setDiaSeleccionado] = useState(null);
   const [eventosDelDia, setEventosDelDia] = useState(null);
   const [exportandoPdfDia, setExportandoPdfDia] = useState(false);
+  const [rangoHoras, setRangoHoras] = useState(0); // 0 = todo el día; 3 o 5 = solo las últimas N horas (solo hoy)
 
   useEffect(() => {
     if (!tooltip) {
@@ -2534,6 +2535,7 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
   async function abrirDetalleDia(d) {
     setDiaSeleccionado(d);
     setEventosDelDia(null);
+    setRangoHoras(0);
     try {
       const inicioUTC = new Date(`${d.key}T05:00:00.000Z`);
       const finUTC = new Date(inicioUTC.getTime() + 24 * 60 * 60 * 1000);
@@ -2552,10 +2554,24 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
 
   function exportarPdfDia() {
     if (!diaSeleccionado || !eventosDelDia || eventosDelDia.length === 0) return;
+    // Rango opcional: solo las últimas 3 o 5 horas (solo aplica al día de hoy)
+    const esHoyDia = diaSeleccionado.key === fechaLimaISO(new Date());
+    const horas = esHoyDia ? rangoHoras : 0;
+    const desde = horas > 0 ? Date.now() - horas * 60 * 60 * 1000 : 0;
+    const lista = horas > 0
+      ? eventosDelDia.filter((ev) => ev.timestamp?.toDate && ev.timestamp.toDate().getTime() >= desde)
+      : eventosDelDia;
+    if (lista.length === 0) {
+      alert(`No hay actividad en las últimas ${horas} horas.`);
+      return;
+    }
+    const tituloFecha = horas > 0
+      ? `${formatearFechaLarga(diaSeleccionado.fecha)} — últimas ${horas} horas`
+      : formatearFechaLarga(diaSeleccionado.fecha);
     setExportandoPdfDia(true);
     setTimeout(() => {
       try {
-        generarReporteActividadDiaPDF(formatearFechaLarga(diaSeleccionado.fecha), diaSeleccionado.key, eventosDelDia, {});
+        generarReporteActividadDiaPDF(tituloFecha, horas > 0 ? `${diaSeleccionado.key}_ultimas_${horas}h` : diaSeleccionado.key, lista, {});
       } catch (err) {
         alert(`No se pudo generar el PDF: ${err.message}`);
       } finally {
@@ -2717,6 +2733,26 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                 </div>
               </div>
               <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                {diaSeleccionado.key === fechaLimaISO(new Date()) && (
+                  <select
+                    value={rangoHoras}
+                    onChange={(e) => setRangoHoras(Number(e.target.value))}
+                    style={{
+                      fontSize: 13,
+                      padding: "7px 10px",
+                      borderRadius: 8,
+                      border: "1.5px solid #A83D74",
+                      background: "#0D1F15",
+                      color: "#F2ECE9",
+                      cursor: "pointer",
+                    }}
+                    title="Rango de horas que se exporta en el PDF"
+                  >
+                    <option value={0}>Todo el día</option>
+                    <option value={3}>Últimas 3 horas</option>
+                    <option value={5}>Últimas 5 horas</option>
+                  </select>
+                )}
                 <button
                   onClick={exportarPdfDia}
                   disabled={exportandoPdfDia || !eventosDelDia || eventosDelDia.length === 0}
