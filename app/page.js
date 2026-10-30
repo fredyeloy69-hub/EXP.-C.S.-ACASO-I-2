@@ -60,6 +60,8 @@ const EVENTO_LABEL = {
   archivo_subido: "subió",
   archivo_reemplazado: "reemplazó",
   archivo_borrado: "borró",
+  archivo_movido: "movió",
+  archivo_copiado: "copió",
   carpeta_creada: "creó la carpeta",
   carpeta_borrada: "borró la carpeta",
   carpeta_movida: "movió la carpeta",
@@ -72,6 +74,8 @@ const EVENTO_COLOR = {
   archivo_subido: "#A83D74",
   archivo_reemplazado: "#e67e22",
   archivo_borrado: "#c0392b",
+  archivo_movido: "#9b7be0",
+  archivo_copiado: "#2bb5a0",
   carpeta_creada: "#D2691E",
   carpeta_borrada: "#c0392b",
   carpeta_movida: "#e67e22",
@@ -84,6 +88,8 @@ const EVENTO_ICONO = {
   archivo_subido: "↑",
   archivo_reemplazado: "⟲",
   archivo_borrado: "✕",
+  archivo_movido: "⇄",
+  archivo_copiado: "⧉",
   carpeta_creada: "+",
   carpeta_borrada: "✕",
   carpeta_movida: "⇄",
@@ -1844,10 +1850,16 @@ export default function Page() {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: 13, color: "#F2ECE9" }}>
-                        <strong>{e.usuario}</strong> <span style={{ color }}>{EVENTO_LABEL[e.tipo] || e.tipo}</span> <strong>{e.item}</strong>
+                        <strong>{e.usuario}</strong>{e.ultimoModificador && /^(No identificado|Desconocido)/.test(e.usuario || "") ? <span style={{ fontSize: 11, color: "#D9C4C8" }}> (última modificación en Drive: {e.ultimoModificador})</span> : null} <span style={{ color }}>{EVENTO_LABEL[e.tipo] || e.tipo}</span> <strong>{e.item}</strong>
                       </div>
+                      {(e.tipo === "archivo_movido" || e.tipo === "archivo_copiado" || e.tipo === "carpeta_movida") && (e.desde || e.ruta) && (
+                        <div style={{ fontSize: 10.5, color: "#D9C4C8", marginTop: 3, wordBreak: "break-all" }}>
+                          {e.desde ? <div>Desde: {e.desde}</div> : null}
+                          {e.ruta ? <div>Hacia: {e.ruta}</div> : null}
+                        </div>
+                      )}
                       <div style={{ fontSize: 10, color: "#D9C4C8", marginTop: 2 }}>
-                        {tiempoRelativo(fecha)}
+                        {fecha ? `${fecha.toLocaleString("es-PE", { timeZone: "America/Lima", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: true })} · ` : ""}{tiempoRelativo(fecha)}
                       </div>
                     </div>
                   </div>
@@ -2835,8 +2847,13 @@ function ActividadHeatmap({ actividadPorDia, diasCustom = 84, grande }) {
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 14, color: "#F2ECE9" }}>
-                            <strong>{ev.usuario || "Usuario"}</strong> <span style={{ color }}>{EVENTO_LABEL[ev.tipo] || ev.tipo}</span> <strong style={{ color: "#A83D74" }}>{ev.item}</strong>
+                            <strong>{ev.usuario || "Usuario"}</strong>{ev.ultimoModificador && /^(No identificado|Desconocido)/.test(ev.usuario || "") ? <span style={{ fontSize: 12, color: "#D9C4C8" }}> (última modificación en Drive: {ev.ultimoModificador})</span> : null} <span style={{ color }}>{EVENTO_LABEL[ev.tipo] || ev.tipo}</span> <strong style={{ color: "#A83D74" }}>{ev.item}</strong>
                           </div>
+                          {ev.desde && (
+                            <div style={{ fontSize: 12, color: "#D9C4C8", marginTop: 3, wordBreak: "break-all" }}>
+                              Desde: {ev.desde}
+                            </div>
+                          )}
                           {ev.ruta && (
                             <div style={{ fontSize: 12, color: "#D9C4C8", marginTop: 3, wordBreak: "break-all" }}>
                               📁 {ev.ruta}
